@@ -55,6 +55,5 @@ buck-out/
 # Bundle artifact
 *.jsbundle
 
-/ios
-/android
-app/fakeBank/android/s
+
+/app/fakeBank/node_modules/
