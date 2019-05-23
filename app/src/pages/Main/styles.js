@@ -2,8 +2,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  background: #FF5;
-  padding-top: 50px;
+  background: #FFF;
   justify-content: center;
 `;
 
@@ -22,8 +21,9 @@ export const CardContent = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-size: 13px;
-  color: #d1d2d6;
+  font-size: 30px;
+  color: #000;
+  margin: 10px 10px;
   text-align: center;
 `;
 

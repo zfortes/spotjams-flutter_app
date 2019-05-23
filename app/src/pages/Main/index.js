@@ -13,9 +13,8 @@ import {
 
 const Main = () => (
   <Container>
+    <Title>FakeBank</Title>
     <ListTransactions></ListTransactions>
-    <Title>FakeBank Jose</Title>
-    
   </Container>
 );
 
