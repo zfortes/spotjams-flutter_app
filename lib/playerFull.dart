@@ -1,143 +1,533 @@
-import 'dart:ui';
+import 'dart:async';
 
-import 'dart:math' as math;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+enum PlayerState { stopped, playing, paused }
 
-const double minHeight = 80;
+class PlayerWidget extends StatefulWidget {
+  final String url;
+  final bool isLocal;
+  final PlayerMode mode;
 
-class PlayerFull extends StatefulWidget {
-    @override
-    _PlayerFull createState() => _PlayerFull();
+  PlayerWidget(
+      {@required this.url,
+        this.isLocal = false,
+        this.mode = PlayerMode.MEDIA_PLAYER});
+
+  @override
+  State<StatefulWidget> createState() {
+    return new _PlayerWidgetState(url, isLocal, mode);
+  }
 }
 
-class _PlayerFull extends State<PlayerFull>
-    with SingleTickerProviderStateMixin {
-    //AnimationController _controller;
-    @override
-    void initState() {
-        super.initState();
+class _PlayerWidgetState extends State<PlayerWidget> {
+  String url;
+  bool isLocal;
+  PlayerMode mode;
 
-    }
+  AudioPlayer _audioPlayer;
+  AudioPlayerState _audioPlayerState;
+  Duration _duration;
+  Duration _position;
 
+  PlayerState _playerState = PlayerState.stopped;
+  StreamSubscription _durationSubscription;
+  StreamSubscription _positionSubscription;
+  StreamSubscription _playerCompleteSubscription;
+  StreamSubscription _playerErrorSubscription;
+  StreamSubscription _playerStateSubscription;
 
-    @override
-    Widget build(BuildContext context) {
-        return Align(
-            alignment: Alignment.topLeft,
-            child: SafeArea(
-                child: Container(
-                  child: CardAlbum()
-//                  Row(
-//                      crossAxisAlignment: CrossAxisAlignment.start,
-//                      children: <Widget>[
-//
-//                          CardAlbum(assetName: "steve-johnson.jpeg", offset: 1,),
-//                          Spacer(flex: 1,),
-//                          Text("Teste meio"),
-//                          Container(
-//                              child: Container (
-//                                 child : Text("Teste"),
-//                              ),
-//                          )
-//                      ]
-//                  )
-                )
-            )
-        );
-    }
+  get _isPlaying => _playerState == PlayerState.playing;
+  get _isPaused => _playerState == PlayerState.paused;
+  get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+  get _positionText => _position?.toString()?.split('.')?.first ?? '';
 
+  _PlayerWidgetState(this.url, this.isLocal, this.mode);
 
-}
+  @override
+  void initState() {
+    super.initState();
+    _initAudioPlayer();
+  }
 
-class CardAlbum extends StatelessWidget{
+  @override
+  void dispose() {
+    _audioPlayer.stop();
+    _durationSubscription?.cancel();
+    _positionSubscription?.cancel();
+    _playerCompleteSubscription?.cancel();
+    _playerErrorSubscription?.cancel();
+    _playerStateSubscription?.cancel();
+    super.dispose();
+  }
 
-//    final String assetName;
-//    final double offset;
-//
-//    const CardAlbum({
-//        Key key,
-//        @required this.assetName,
-//        @required this.offset,
-//    }) : super(key: key);
-
-    @override
-    Widget build(BuildContext context) {
-//        double gauss = math.exp(-(math.pow((offset.abs() - 0.5), 2) / 0.08));
-      return Transform.translate(
-            offset: Offset(45, 0),
-            child: Container(
-                margin: EdgeInsets.only(left: 8, right: 8, bottom: 24),
-
-                child: Column(
-                    children: <Widget>[
-                        ClipRRect(
-                            borderRadius: BorderRadius.all({30,
-                              20,
-                              30,
-                              30,}),
-                            child: Image.asset(
-                                'assets/steve-johnson.jpeg',
-                                height: MediaQuery.of(context).size.height * 0.3,
-
-                            ),
-                        ),
-//                        SizedBox(height: 1),
-                    ],
-                ),
+  @override
+  Widget build(BuildContext context) {
+    return new Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        new Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            new IconButton(
+                onPressed: _isPlaying ? null : () => _play(),
+                iconSize: 64.0,
+                icon: new Icon(Icons.play_arrow),
+                color: Colors.cyan),
+            new IconButton(
+                onPressed: _isPlaying ? () => _pause() : null,
+                iconSize: 64.0,
+                icon: new Icon(Icons.pause),
+                color: Colors.cyan),
+            new IconButton(
+                onPressed: _isPlaying || _isPaused ? () => _stop() : null,
+                iconSize: 64.0,
+                icon: new Icon(Icons.stop),
+                color: Colors.cyan),
+          ],
+        ),
+        new Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            new Padding(
+              padding: new EdgeInsets.all(12.0),
+              child: new Stack(
+                children: [
+                  new CircularProgressIndicator(
+                    value: 1.0,
+                    valueColor: new AlwaysStoppedAnimation(Colors.grey[300]),
+                  ),
+                  new CircularProgressIndicator(
+                    value: (_position != null &&
+                        _duration != null &&
+                        _position.inMilliseconds > 0 &&
+                        _position.inMilliseconds < _duration.inMilliseconds)
+                        ? _position.inMilliseconds / _duration.inMilliseconds
+                        : 0.0,
+                    valueColor: new AlwaysStoppedAnimation(Colors.cyan),
+                  ),
+                ],
+              ),
             ),
-        );
-    }
-}
-
-class PlayButton extends StatelessWidget {
-    @override
-    Widget build(BuildContext context) {
-        return Positioned(
-            //<-- Align the icon to bottom right corner
-            right: 0,
-            bottom: 24,
-            child: Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 28,
+            new Text(
+              _position != null
+                  ? '${_positionText ?? ''} / ${_durationText ?? ''}'
+                  : _duration != null ? _durationText : '',
+              style: new TextStyle(fontSize: 24.0),
             ),
-        );
+          ],
+        ),
+        new Text("State: $_audioPlayerState")
+      ],
+    );
+  }
+
+  void _initAudioPlayer() {
+    _audioPlayer = AudioPlayer(mode: mode);
+
+    _durationSubscription =
+        _audioPlayer.onDurationChanged.listen((duration) => setState(() {
+          _duration = duration;
+        }));
+
+    _positionSubscription =
+        _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
+          _position = p;
+        }));
+
+    _playerCompleteSubscription =
+        _audioPlayer.onPlayerCompletion.listen((event) {
+          _onComplete();
+          setState(() {
+            _position = _duration;
+          });
+        });
+
+    _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
+      print('audioPlayer error : $msg');
+      setState(() {
+        _playerState = PlayerState.stopped;
+        _duration = Duration(seconds: 0);
+        _position = Duration(seconds: 0);
+      });
+    });
+
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      if (!mounted) return;
+      setState(() {
+        _audioPlayerState = state;
+      });
+    });
+  }
+
+  Future<int> _play() async {
+    final playPosition = (_position != null &&
+        _duration != null &&
+        _position.inMilliseconds > 0 &&
+        _position.inMilliseconds < _duration.inMilliseconds)
+        ? _position
+        : null;
+    final result =
+    await _audioPlayer.play(url, isLocal: isLocal, position: playPosition);
+    if (result == 1) setState(() => _playerState = PlayerState.playing);
+    return result;
+  }
+
+  Future<int> _pause() async {
+    final result = await _audioPlayer.pause();
+    if (result == 1) setState(() => _playerState = PlayerState.paused);
+    return result;
+  }
+
+  Future<int> _stop() async {
+    final result = await _audioPlayer.stop();
+    if (result == 1) {
+      setState(() {
+        _playerState = PlayerState.stopped;
+        _position = Duration();
+      });
     }
+    return result;
+  }
+
+  void _onComplete() {
+    setState(() => _playerState = PlayerState.stopped);
+  }
 }
 
 
-class Header extends StatelessWidget {
-    final double fontSize;
-    final double topMargin;
 
-    const Header(
-        {Key key, @required this.fontSize, @required this.topMargin})
-        : super(key: key);
 
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-          child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text("Music"),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Text("Almbum"),
-                      ],
-                    ),
-                  ]
-              )
-          )
-      ) ;
 
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//import 'dart:async';
+//import 'dart:ui';
+//import 'package:flutter/foundation.dart';
+//
+//import 'dart:math' as math;
+//import 'package:flutter/material.dart';
+//import 'package:audioplayers/audio_cache.dart';
+//import 'package:audioplayers/audioplayers.dart';
+//import 'package:http/http.dart';
+//
+//const double minHeight = 80;
+//enum PlayerState { stopped, playing, paused }
+//const url = "http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3";
+//
+//
+//class PlayerFull extends StatefulWidget {
+//  final PlayerMode mode;
+//  final bool isLocal;
+//
+//  PlayerFull(
+//    {
+//    this.isLocal = false,
+//    this.mode = PlayerMode.MEDIA_PLAYER});
+//
+//  @override
+//    _PlayerFull createState() => new _PlayerFull();
+//
+//}
+//
+//class _PlayerFull extends State<PlayerFull>
+//    with SingleTickerProviderStateMixin {
+//    //AnimationController _controller;
+//    bool isLocal = false;
+//    PlayerMode mode = PlayerMode.MEDIA_PLAYER;
+//
+//
+//
+//    //AUDIO  -----------------------------------------------------------
+//    AudioPlayer _audioPlayer;
+//    AudioPlayerState _audioPlayerState;
+//    Duration _duration;
+//    Duration _position;
+//
+//    PlayerState _playerState = PlayerState.stopped;
+//    StreamSubscription _durationSubscription;
+//    StreamSubscription _positionSubscription;
+//    StreamSubscription _playerCompleteSubscription;
+//    StreamSubscription _playerErrorSubscription;
+//    StreamSubscription _playerStateSubscription;
+//
+//    get _isPlaying => _playerState == PlayerState.playing;
+//    get _isPaused => _playerState == PlayerState.paused;
+//    get _durationText => _duration?.toString()?.split('.')?.first ?? '';
+//    get _positionText => _position?.toString()?.split('.')?.first ?? '';
+//
+//
+//
+//    //AUDIO ---------------------------------------------------------------
+//
+//
+//    @override
+//    void initState() {
+//      super.initState();
+//      _initAudioPlayer();
+//    }
+//
+//    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//    @override
+//    void dispose() {
+//      _audioPlayer.stop();
+//      _durationSubscription?.cancel();
+//      _positionSubscription?.cancel();
+//      _playerCompleteSubscription?.cancel();
+//      _playerErrorSubscription?.cancel();
+//      _playerStateSubscription?.cancel();
+//      super.dispose();
+//    }
+//
+//
+//
+//
+//    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//    @override
+//    Widget build(BuildContext context) {
+//        return Scaffold(
+////            body: Align(
+////              alignment: Alignment.topLeft,
+//              body: SafeArea(
+//                child: Column(
+//                  children: <Widget> [
+//                    Header(),
+//                    HeaderMusic(artistName: "Martin", musicName: "Acces",),
+//                    CardAlbum(),
+//                    ControlButtons(),
+//                    IconButton(
+//                      icon: Icon(Icons.play_arrow),
+//                      onPressed: _isPlaying ? null : () => _play(),
+//                    )
+//                ]
+//                )
+////              )
+//            )
+//        );
+//    }
+//
+//
+//
+//    void _initAudioPlayer() {
+//      _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+//
+//      _durationSubscription =
+//          _audioPlayer.onDurationChanged.listen((duration) => setState(() {
+//            _duration = duration;
+//          }));
+//
+//      _positionSubscription =
+//          _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
+//            _position = p;
+//          }));
+//
+//      _playerCompleteSubscription =
+//          _audioPlayer.onPlayerCompletion.listen((event) {
+//            _onComplete();
+//            setState(() {
+//              _position = _duration;
+//            });
+//          });
+//
+//      _playerErrorSubscription = _audioPlayer.onPlayerError.listen((msg) {
+//        print('audioPlayer error : $msg');
+//        setState(() {
+//          _playerState = PlayerState.stopped;
+//          _duration = Duration(seconds: 0);
+//          _position = Duration(seconds: 0);
+//        });
+//      });
+//
+//      _audioPlayer.onPlayerStateChanged.listen((state) {
+//        if (!mounted) return;
+//        setState(() {
+//          _audioPlayerState = state;
+//        });
+//      });
+//    }
+//
+//    Future<int> _play() async {
+//      print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//      final playPosition = (_position != null &&
+//          _duration != null &&
+//          _position.inMilliseconds > 0 &&
+//          _position.inMilliseconds < _duration.inMilliseconds)
+//          ? _position
+//          : null;
+//      final result =
+//      await _audioPlayer.play(url, isLocal: isLocal, position: playPosition);
+//      if (result == 1) setState(() => _playerState = PlayerState.playing);
+//      return result;
+//    }
+//
+//    Future<int> _pause() async {
+//      final result = await _audioPlayer.pause();
+//      if (result == 1) setState(() => _playerState = PlayerState.paused);
+//      return result;
+//    }
+//
+//    Future<int> _stop() async {
+//      final result = await _audioPlayer.stop();
+//      if (result == 1) {
+//        setState(() {
+//          _playerState = PlayerState.stopped;
+//          _position = Duration();
+//        });
+//      }
+//      return result;
+//    }
+//
+//    void _onComplete() {
+//      setState(() => _playerState = PlayerState.stopped);
+//    }
+//
+//
+//}
+//
+//
+//
+//class CardAlbum extends StatelessWidget{
+//
+////    final String assetName;
+////    final double offset;
+////
+////    const CardAlbum({
+////        Key key,
+////        @required this.assetName,
+////        @required this.offset,
+////    }) : super(key: key);
+//
+//    @override
+//    Widget build(BuildContext context) {
+////        double gauss = math.exp(-(math.pow((offset.abs() - 0.5), 2) / 0.08));
+//      return Card(
+//          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+////          shape: RoundedRectangleBorder(
+////            borderRadius: BorderRadius.circular(20.0)
+////          ),
+//          color: Colors.green,
+//          child: Container(
+//            width: 320.0,
+//            height: 320.0,
+//            child: Image.network(
+//              'https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true'
+//            ),
+//          ),
+//        );
+//    }
+//}
+//
+//class HeaderMusic extends StatelessWidget{
+//  final String musicName;
+//  final String artistName;
+//
+//  const HeaderMusic(
+//        {Key key, @required this.musicName, @required this.artistName})
+//        : super(key: key);
+//
+//  @override
+//  Widget build(BuildContext context){
+//    return Container(
+//        child:  Padding(
+//            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 22.0),
+//            child: Align(
+//                alignment: Alignment.topLeft,
+//                child: Column(
+//                  children: <Widget>[
+//                    Text(musicName),
+//                    Text(artistName)
+//                  ],
+//                )
+//            )
+//        )
+//    );
+//  }
+//}
+//
+//class ControlButtons extends StatelessWidget {
+//    @override
+//    Widget build(BuildContext context) {
+//        return Container(
+//            child:  Padding(
+//            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 22.0),
+//                child: Row(
+//                    mainAxisAlignment: MainAxisAlignment.center,
+//                    children: <Widget>[
+//                        Icon(
+//                          Icons.arrow_back_ios,
+//                          color: Colors.grey,
+//                          size: 48,
+//                        ),
+//                        Icon(
+//                          Icons.play_arrow,
+//                          color: Colors.grey,
+//                          size: 75,
+//                         ),
+//                        Icon(
+//                          Icons.arrow_forward_ios,
+//                          color: Colors.grey,
+//                          size: 48,
+//                        )
+//                    ]
+//                )
+//            )
+//        );
+//
+////        );
+//    }
+//}
+//
+//
+//class Header extends StatelessWidget {
+////    final double fontSize;
+////    final double topMargin;
+////
+////    const Header(
+////        {Key key, @required this.fontSize, @required this.topMargin})
+////        : super(key: key);
+//
+//    @override
+//    Widget build(BuildContext context) {
+//      return Container(
+//        child:  Padding(
+//            padding: EdgeInsets.all(22.0),
+//            child: Align(
+//              alignment: Alignment.topLeft,
+//              child: Row(
+//                children: <Widget>[
+//                  Icon(Icons.play_arrow),
+//                  Text("Now Playing")
+//                ],
+//              )
+//            )
+//        )
+//      );
+//
+//    }
+//}

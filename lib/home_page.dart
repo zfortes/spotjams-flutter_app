@@ -1,6 +1,9 @@
 import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
-import 'package:spotjams/playerWidget.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart';
+//import 'package:spotjams/playerWidget.dart';
 import 'package:spotjams/sliding_cards.dart';
 import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: PlayerFull()//Stack(
+      body: PlayerWidget(url: "http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3")//Stack(
 //        children: <Widget>[
 //          SafeArea(
 //            child: Column(
