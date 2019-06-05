@@ -242,8 +242,8 @@ class ExpandedEventItem extends StatelessWidget {
 
 final List<Event> events = [
   Event('steve-johnson.jpeg', 'Item 1', '4.20-30'),
-  Event('efe-kurnaz.jpg', 'Teste  dois', '4.20-30'),
-  Event('rodion-kutsaev.jpeg', 'Dawan District Guangdong Hong Kong', '4.28-31'),
+  //Event('efe-kurnaz.jpg', 'Teste  dois', '4.20-30'),
+  //Event('rodion-kutsaev.jpeg', 'Dawan District Guangdong Hong Kong', '4.28-31'),
 ];
 
 class Event {
