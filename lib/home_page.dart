@@ -3,6 +3,7 @@ import 'package:spotjams/playerFull.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
+import 'package:spotjams/playerWidget.dart';
 //import 'package:spotjams/playerWidget.dart';
 import 'package:spotjams/sliding_cards.dart';
 import 'package:spotjams/tabs.dart';
@@ -38,10 +39,50 @@ class _HomePage extends State<HomePage> {
                 Tabs(),
                 SizedBox(height: 8),
                 SlidingCardsView(),
+                IconButton(
+                  icon: Icon(Icons.arrow_left),
+                    onPressed: () {
+                      Navigator.push(
+                          context, new MaterialPageRoute(
+                          builder: (context) => new PlayerFull(audioPlayer: audioPlayer,)));
+                    }
+                ),
+                IconButton(
+                    icon: Icon(Icons.pause_circle_filled),
+                    onPressed: () => audioPlayer.pause(),
+
+                ),
+                IconButton(
+                  icon: Icon(Icons.play_circle_filled),
+                  onPressed: () => audioPlayer.resume(),
+
+                )
               ],
             )
           ),
-          PlayerFull(audioPlayer: audioPlayer),//Stack(
+          Positioned(
+              bottom: 0,
+              child: Container(
+
+              ),
+          )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//          PlayerWidget()
+//          PlayerFull(audioPlayer: audioPlayer),//Stack(
       ]
 //        children: <Widget>[
 //          SafeArea(

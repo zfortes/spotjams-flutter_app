@@ -1,14 +1,20 @@
 import 'dart:ui';
 
 import 'dart:math' as math;
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const double minHeight = 80;
+const url2 = "https://api.soundcloud.com/tracks/266891990/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
 
 class PlayerWidget extends StatefulWidget {
+  AudioPlayer audioPlayer;
+  PlayerWidget({Key key,@required this.audioPlayer}) : super(key: key);
+
+
   @override
-  _PlayerWidget createState() => _PlayerWidget();
+  _PlayerWidget createState() => new _PlayerWidget(audioPlayer);
 }
 
 class _PlayerWidget extends State<PlayerWidget>
@@ -21,6 +27,8 @@ class _PlayerWidget extends State<PlayerWidget>
 
   double get headerFontSize => lerp(14, 24);
 
+
+  AudioPlayer audioPlayer;
   @override
   void initState() {
     super.initState();
@@ -61,21 +69,85 @@ class _PlayerWidget extends State<PlayerWidget>
                     borderRadius:
                         BorderRadius.vertical(top: Radius.circular(32)),
                   ),
-                  child: Stack(
-                    children: <Widget>[
-                      PlayButton(),
-                      Header(                //<-- Add a header with params
-                        fontSize: headerFontSize,
-                        topMargin: headerTopMargin,
-                      ),
-                      CardAlbum(assetName: "steve-johnson.jpeg", offset: 1,),
-
-                    ],
-                  ),
+                  child: Scaffold(
+//            body: Align(
+//              alignment: Alignment.topLeft,
+                      body: SafeArea(
+                          child: Column(
+                              children: <Widget> [
+                                Header(),
+                                HeaderMusic(artistName: "Martin", musicName: "Acces",),
+                                CardAlbum(),
+                                Container(
+                                    child:  Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+                                        child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              IconButton(
+                                                icon: Icon(Icons.arrow_back_ios),
+                                                color: Colors.grey,
+                                                iconSize: 48,
+                                                onPressed: pause,
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.play_arrow),
+                                                color: Colors.grey,
+                                                iconSize: 48,
+                                                onPressed: play,
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.arrow_forward_ios),
+                                                color: Colors.grey,
+                                                iconSize: 48,
+                                                onPressed: play,
+                                              ),
+                                            ]
+                                        )
+                                    )
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.play_arrow),
+                                  onPressed: play,
+                                )
+                              ]
+                          )
+//              )
+                      )
+                  )
                 ),
               ));
         });
+
+
   }
+
+
+  void play() async{
+
+    int result = await audioPlayer.play(url2);
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      print('Max duration:');
+
+    });
+//      Duration audioPlayer.duration;
+//      print(() => duration = audioPlayer.duration);
+  }
+
+  void pause() async{
+
+    int result = await audioPlayer.pause();
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      print('Max duration:');
+
+    });
+//      Duration audioPlayer.duration;
+//      print(() => duration = audioPlayer.duration);
+  }
+
+  _PlayerWidget(this.audioPlayer);
+
+
 
   void _toggle() {
     final bool isOpen = _controller.status == AnimationStatus.completed;
@@ -109,6 +181,37 @@ class _PlayerWidget extends State<PlayerWidget>
               : 2.0); //<-- or just continue to whichever edge is closer
   }
 }
+
+
+class HeaderMusic extends StatelessWidget{
+  final String musicName;
+  final String artistName;
+
+  const HeaderMusic(
+      {Key key, @required this.musicName, @required this.artistName})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context){
+    return Container(
+        child:  Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 22.0),
+            child: Align(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  children: <Widget>[
+                    Text(musicName),
+                    Text(artistName)
+                  ],
+                )
+            )
+        )
+    );
+  }
+}
+
+
+
 
 class CardAlbum extends StatelessWidget{
   final String assetName;

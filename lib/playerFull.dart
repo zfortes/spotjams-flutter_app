@@ -9,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
 
 
+
 const double minHeight = 80;
 enum PlayerState { stopped, playing, paused }
 const url0 = "https://api.soundcloud.com/tracks/266891990/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
@@ -94,7 +95,7 @@ class _PlayerFull extends State<PlayerFull>
                                     icon: Icon(Icons.play_arrow),
                                     color: Colors.grey,
                                     iconSize: 48,
-                                    onPressed: play,
+                                    onPressed: play
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.arrow_forward_ios),
