@@ -1,5 +1,5 @@
 import 'package:flutter/painting.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
 import 'dart:io';
@@ -12,6 +12,7 @@ import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
+
 import 'package:spotjams/entities/Music.dart';
 const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
@@ -22,6 +23,8 @@ class PlayerInfo extends ChangeNotifier{
   bool status;
   int indexMusic;
   List<Music> playlistOn;
+  int index;
+  Music activMusic;
   AudioPlayer audioPlayer;
   PlayerInfo(){
     this.audioPlayer = new AudioPlayer();
@@ -97,7 +100,7 @@ class MiniPlayer extends StatelessWidget{
                 onPressed: () {
                   Navigator.push(
                       context, new MaterialPageRoute(
-                      builder: (context) => new PlayerFull(audioPlayer: playerInfo.audioPlayer,)));
+                      builder: (context) => new PlayerFull(playerInfo: playerInfo,)));
                 }
             ),
             IconButton(

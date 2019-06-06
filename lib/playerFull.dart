@@ -8,12 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 //import 'package:audioplayer/audioplayer.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 import 'package:spotjams/entities/Music.dart';
+
+import 'home_page.dart';
 
 
 const double minHeight = 80;
 enum PlayerState { stopped, playing, paused }
-int index = 0;
+int index;
 
 
 List<Music> playlist = new List<Music>();
@@ -38,11 +41,11 @@ const url3 = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-
 
 class PlayerFull extends StatefulWidget {
 
-  AudioPlayer audioPlayer;
-  PlayerFull({Key key,@required this.audioPlayer}) : super(key: key);
+  final playerInfo;
+  PlayerFull({Key key,@required this.playerInfo}) : super(key: key);
 
   @override
-    _PlayerFull createState() => new _PlayerFull(audioPlayer);
+    _PlayerFull createState() => new _PlayerFull(playerInfo);
 
 }
 
@@ -52,32 +55,37 @@ class _PlayerFull extends State<PlayerFull>
 
     //____________________________________________________
 
-//  AudioPlayer audioPlayer = AudioPlayer();
+    final playerInfo;
 
-    AudioPlayer audioPlayer;
+
 
 
     @override
     void initState() {
+      addmusic();
       super.initState();
-        addmusic();
+
     }
 
     void addmusic(){
         Music music = new Music();
+        playerInfo.playlistOn = new List<Music>();
         music.artist = "Desconhecido";
         music.nameMusic = "Eletro dodo";
         music.urlAudio = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
         music.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
-        playlist.add(music);
+        playerInfo.playlistOn.add(music);
 
         Music music2 = new Music();
         music2.artist = "Desconhecido";
         music2.nameMusic = "Chata";
-        music2.urlAudio = "https://luan.xyz/files/audio/ambient_c_motion.mp3";
-        music2.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
-        playlist.add(music2);
+        music2.urlAudio = "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
+        music2.urlAlbum = "https://www.google.com.br/url?sa=i&source=images&cd=&ved=2ahUKEwjSuPi_vNXiAhXzJrkGHU8sAs4QjRx6BAgBEAU&url=http%3A%2F%2Fwww.openculture.com%2F2018%2F02%2Fenter-the-cover-art-archive.html&psig=AOvVaw3V921WZ51dPB9kqf7Wnohw&ust=1559931680266148";
+        playerInfo.playlistOn.add(music2);
+        index = 0;
 
+        playerInfo.activMusic = playerInfo.playlistOn[0];
+        print(playerInfo.activMusic.urlAlbum);
     }
 
 
@@ -86,6 +94,7 @@ class _PlayerFull extends State<PlayerFull>
 
     @override
     Widget build(BuildContext context) {
+//        final playerInfo = Provider.of<PlayerInfo>(context);
         return Scaffold(
 //            body: Align(
 //              alignment: Alignment.topLeft,
@@ -94,7 +103,7 @@ class _PlayerFull extends State<PlayerFull>
                   children: <Widget> [
                     Header(),
                     HeaderMusic(artistName: "Martin", musicName: "Acces",),
-                    CardAlbum(),
+                    CardAlbum(playerInfo.activMusic.urlAlbum),
                     Container(
                         child:  Padding(
                             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
@@ -105,7 +114,7 @@ class _PlayerFull extends State<PlayerFull>
                                     icon: Icon(Icons.arrow_back_ios),
                                     color: Colors.grey,
                                     iconSize: 48,
-                                    onPressed: pause,
+                                    onPressed: previous,
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.play_arrow),
@@ -138,7 +147,7 @@ class _PlayerFull extends State<PlayerFull>
 
   void play() async{
 
-    await audioPlayer.play(url3);
+    await playerInfo.audioPlayer.play(playerInfo.activMusic.urlAudio);
 //    audioPlayer.onDurationChanged.listen((Duration d) {
 //      print('Max duration:');
 //
@@ -148,27 +157,39 @@ class _PlayerFull extends State<PlayerFull>
   }
 
     void pause() async{
+      await playerInfo.audioPlayer.pause();
 
-      await audioPlayer.pause();
-//      audioPlayer.onDurationChanged.listen((Duration d) {
-//        print('Max duration:');
-//
-//      });
-//      Duration audioPlayer.duration;
-//      print(() => duration = audioPlayer.duration);
     }
 
 
     void next(){
-        if (index < playlist.length -1 ){
-            audioPlayer.play(playlist[index+1].urlAudio);
+        if (playerInfo.index < playerInfo.playlistOn.length -1 ){
+          playerInfo.index++;
+          playerInfo.activMusic = playerInfo.playlistOn[playerInfo.index];
+          playerInfo.audioPlayer.play(playerInfo.activMusic.urlAudio);
+
         }else{
-            audioPlayer.play(playlist[0].urlAudio);
+          playerInfo.index = 0;
+          playerInfo.activMusic = playerInfo.playlistOn[0];
+//          playerInfo.audioPlayer.play(playerInfo.activMusic.urlAudio);
+
         }
+
 
     }
 
-  _PlayerFull(this.audioPlayer);
+    void previous(){
+      if (playerInfo.index > 0 ){
+        playerInfo.index--;
+        print(playerInfo.index);
+        playerInfo.activMusic = playerInfo.playlistOn[playerInfo.index];
+        playerInfo.audioPlayer.play(playerInfo.activPlaylist[index].urlAudio);
+        return;
+      }
+
+    }
+
+  _PlayerFull(this.playerInfo);
 
 
 }
@@ -176,7 +197,7 @@ class _PlayerFull extends State<PlayerFull>
 
 
 class CardAlbum extends StatelessWidget{
-
+    String image;
 //    final String assetName;
 //    final double offset;
 //
@@ -200,10 +221,12 @@ class CardAlbum extends StatelessWidget{
             height: 320.0,
             child: Image.network(
               'https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true'
+//                image,
             ),
           ),
         );
     }
+    CardAlbum(String image);
 }
 
 class HeaderMusic extends StatelessWidget{
