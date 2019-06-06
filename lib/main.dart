@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'SF Pro Display'),
       title: 'Buy Tickets',
-      home: HomePage(),
+      home:HomePage(),
     );
   }
 }

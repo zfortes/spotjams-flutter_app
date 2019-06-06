@@ -125,22 +125,22 @@ class _PlayerWidget extends State<PlayerWidget>
 
   void play() async{
 
-    int result = await audioPlayer.play(url2);
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      print('Max duration:');
-
-    });
+//    int result = await audioPlayer.play(url2);
+//    audioPlayer.onDurationChanged.listen((Duration d) {
+//      print('Max duration:');
+//
+//    });
 //      Duration audioPlayer.duration;
 //      print(() => duration = audioPlayer.duration);
   }
 
   void pause() async{
 
-    int result = await audioPlayer.pause();
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      print('Max duration:');
-
-    });
+//    int result = await audioPlayer.pause();
+//    audioPlayer.onDurationChanged.listen((Duration d) {
+//      print('Max duration:');
+//
+//    });
 //      Duration audioPlayer.duration;
 //      print(() => duration = audioPlayer.duration);
   }

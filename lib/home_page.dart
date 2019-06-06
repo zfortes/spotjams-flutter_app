@@ -1,8 +1,9 @@
 import 'package:flutter/painting.dart';
+import 'package:provider/provider.dart';
 import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:spotjams/playerWidget.dart';
 //import 'package:spotjams/playerWidget.dart';
@@ -10,9 +11,23 @@ import 'package:spotjams/sliding_cards.dart';
 import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-
+import 'package:provider/provider.dart';
+import 'package:spotjams/entities/Music.dart';
 const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
+
+
+
+class PlayerInfo extends ChangeNotifier{
+  bool status;
+  int indexMusic;
+  List<Music> playlistOn;
+  AudioPlayer audioPlayer;
+  PlayerInfo(){
+    this.audioPlayer = new AudioPlayer();
+  }
+}
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,103 +37,94 @@ class HomePage extends StatefulWidget {
 
 
 class _HomePage extends State<HomePage> {
+  PlayerInfo playerInfo = new PlayerInfo();
 
-  AudioPlayer audioPlayer = new AudioPlayer();
+//  AudioPlayer audioPlayer = new AudioPlayer();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: <Widget> [
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 8),
-                Header(),
-                SizedBox(height: 40),
-                Tabs(),
-                SizedBox(height: 8),
-                SlidingCardsView(),
+    return Container(
+        child: ChangeNotifierProvider(
+            builder: (context) => PlayerInfo(),
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              body: Stack(
+                children: <Widget> [
+                  SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(height: 8),
+                        Header(),
+                        SizedBox(height: 40),
+                        Tabs(),
+                        SizedBox(height: 8),
+                        SlidingCardsView(),
 
-              ],
-            )
-          ),
-          Positioned(
-              bottom: 0,
-              child:Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Container(
-                  color: Colors.blueGrey,
-                  width: MediaQuery.of(context).size.width / 1.080,
-                  child: Row(
-                    children: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.arrow_left),
-                          onPressed: () {
-                            Navigator.push(
-                                context, new MaterialPageRoute(
-                                builder: (context) => new PlayerFull(audioPlayer: audioPlayer,)));
-                          }
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.pause_circle_filled),
-                        onPressed: () => audioPlayer.pause(),
-
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.play_circle_filled),
-                        onPressed: () => audioPlayer.resume(),
-
-                      )
-                    ],
+                      ],
+                    )
                   ),
-                ),
-              ),
-          )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//          PlayerWidget()
-//          PlayerFull(audioPlayer: audioPlayer),//Stack(
-      ]
-//        children: <Widget>[
-//          SafeArea(
-//            child: Column(
-//              crossAxisAlignment: CrossAxisAlignment.start,
-//              children: <Widget>[
-//                SizedBox(height: 8),
-//                Header(),
-//                SizedBox(height: 40),
-//                Tabs(),
-//                SizedBox(height: 8),
-//                SlidingCardsView(),
-//              ],
-//            ),
-//          ),
-//          PlayerWidget(),
-//        ],
-//      ),
-      )
-    );
-  }
+                  Positioned(
+                      bottom: 0,
+                      child:Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: MiniPlayer(),
+                      ),
+                  )
+                ],
+              )
+            )
+            )
+      );
+    }
 
   void iniciar(){print("Teste");}
 }
 
 
+class MiniPlayer extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context){
+    final playerInfo = Provider.of<PlayerInfo>(context);
+    return Consumer<PlayerInfo>(
+      builder: (context, palyerInfo, child)=> Container(
+        color: Colors.blueGrey,
+        width: MediaQuery.of(context).size.width / 1.080,
+        child: Row(
+          children: <Widget>[
+            IconButton(
+                icon: Icon(Icons.arrow_left),
+                onPressed: () {
+                  Navigator.push(
+                      context, new MaterialPageRoute(
+                      builder: (context) => new PlayerFull(audioPlayer: playerInfo.audioPlayer,)));
+                }
+            ),
+            IconButton(
+              icon: Icon(Icons.pause_circle_filled),
+              onPressed: () => pause(playerInfo),
+
+            ),
+            IconButton(
+              icon: Icon(Icons.play_circle_filled),
+              onPressed: () => play(playerInfo),
+
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  void play(PlayerInfo player){
+    player.audioPlayer.resume();
+  }
+
+  void pause(PlayerInfo player){
+    player.audioPlayer.pause();
+  }
+}
 
 
 class Header extends StatelessWidget {

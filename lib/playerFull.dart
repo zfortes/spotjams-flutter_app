@@ -4,17 +4,37 @@ import 'package:flutter/foundation.dart';
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audio_cache.dart';
+//import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+//import 'package:audioplayer/audioplayer.dart';
 import 'package:http/http.dart';
-
+import 'package:spotjams/entities/Music.dart';
 
 
 const double minHeight = 80;
 enum PlayerState { stopped, playing, paused }
-const url0 = "https://api.soundcloud.com/tracks/266891990/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
+int index = 0;
+
+
+List<Music> playlist = new List<Music>();
+final audioUrls = [
+    "https://api.soundcloud.com/tracks/266891990/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+    "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+    "https://api.soundcloud.com/tracks/258735531/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+    "https://api.soundcloud.com/tracks/9540779/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+    "https://api.soundcloud.com/tracks/9540352/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+    "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+];
+
+
+
+
+
+
+const url0 = "https://mega.nz/#!09tUSKjb!CbaTFh8fiAzDKzG8RR1iN6li0HdgZO4oHEeQ-7RsNTM";
 const url = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
 const url2 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
+const url3 = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
 
 class PlayerFull extends StatefulWidget {
 
@@ -29,12 +49,6 @@ class PlayerFull extends StatefulWidget {
 class _PlayerFull extends State<PlayerFull>
     with SingleTickerProviderStateMixin {
 
-    AnimationController _controller;
-    double get maxHeight => MediaQuery.of(context).size.height;
-
-    double get headerTopMargin => lerp(20, 20 + MediaQuery.of(context).padding.top); //<-- Add new property
-
-    double get headerFontSize => lerp(14, 24);
 
     //____________________________________________________
 
@@ -46,24 +60,26 @@ class _PlayerFull extends State<PlayerFull>
     @override
     void initState() {
       super.initState();
-      _controller =
-          AnimationController(vsync: this, duration: Duration(milliseconds: 600));
+        addmusic();
     }
 
+    void addmusic(){
+        Music music = new Music();
+        music.artist = "Desconhecido";
+        music.nameMusic = "Eletro dodo";
+        music.urlAudio = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
+        music.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
+        playlist.add(music);
 
+        Music music2 = new Music();
+        music2.artist = "Desconhecido";
+        music2.nameMusic = "Chata";
+        music2.urlAudio = "https://luan.xyz/files/audio/ambient_c_motion.mp3";
+        music2.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
+        playlist.add(music2);
 
+    }
 
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-
-
-  double lerp(double min, double max) =>
-      lerpDouble(min, max, _controller.value);
 
 
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -101,7 +117,7 @@ class _PlayerFull extends State<PlayerFull>
                                     icon: Icon(Icons.arrow_forward_ios),
                                     color: Colors.grey,
                                     iconSize: 48,
-                                    onPressed: play,
+                                    onPressed: next,
                                   ),
                                 ]
                             )
@@ -122,24 +138,34 @@ class _PlayerFull extends State<PlayerFull>
 
   void play() async{
 
-    int result = await audioPlayer.play(url2);
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      print('Max duration:');
-
-    });
+    await audioPlayer.play(url3);
+//    audioPlayer.onDurationChanged.listen((Duration d) {
+//      print('Max duration:');
+//
+//    });
 //      Duration audioPlayer.duration;
 //      print(() => duration = audioPlayer.duration);
   }
 
     void pause() async{
 
-      int result = await audioPlayer.pause();
-      audioPlayer.onDurationChanged.listen((Duration d) {
-        print('Max duration:');
-
-      });
+      await audioPlayer.pause();
+//      audioPlayer.onDurationChanged.listen((Duration d) {
+//        print('Max duration:');
+//
+//      });
 //      Duration audioPlayer.duration;
 //      print(() => duration = audioPlayer.duration);
+    }
+
+
+    void next(){
+        if (index < playlist.length -1 ){
+            audioPlayer.play(playlist[index+1].urlAudio);
+        }else{
+            audioPlayer.play(playlist[0].urlAudio);
+        }
+
     }
 
   _PlayerFull(this.audioPlayer);
