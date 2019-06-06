@@ -1,3 +1,4 @@
+import 'package:flutter/painting.dart';
 import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
 import 'dart:io';
@@ -39,31 +40,40 @@ class _HomePage extends State<HomePage> {
                 Tabs(),
                 SizedBox(height: 8),
                 SlidingCardsView(),
-                IconButton(
-                  icon: Icon(Icons.arrow_left),
-                    onPressed: () {
-                      Navigator.push(
-                          context, new MaterialPageRoute(
-                          builder: (context) => new PlayerFull(audioPlayer: audioPlayer,)));
-                    }
-                ),
-                IconButton(
-                    icon: Icon(Icons.pause_circle_filled),
-                    onPressed: () => audioPlayer.pause(),
 
-                ),
-                IconButton(
-                  icon: Icon(Icons.play_circle_filled),
-                  onPressed: () => audioPlayer.resume(),
-
-                )
               ],
             )
           ),
           Positioned(
               bottom: 0,
-              child: Container(
+              child:Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Container(
+                  color: Colors.blueGrey,
+                  width: MediaQuery.of(context).size.width / 1.080,
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.arrow_left),
+                          onPressed: () {
+                            Navigator.push(
+                                context, new MaterialPageRoute(
+                                builder: (context) => new PlayerFull(audioPlayer: audioPlayer,)));
+                          }
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.pause_circle_filled),
+                        onPressed: () => audioPlayer.pause(),
 
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.play_circle_filled),
+                        onPressed: () => audioPlayer.resume(),
+
+                      )
+                    ],
+                  ),
+                ),
               ),
           )
 
