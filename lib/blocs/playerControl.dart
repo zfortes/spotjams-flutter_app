@@ -3,34 +3,35 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:spotjams/entities/Music.dart';
 
 class PlayerControl extends BlocBase{
-    bool _status;
+    var _status; // 0 = stop, 1 = play, 2 = paused
     int _index ;
     List<Music> _playlist;
     Music _music;
-    AudioPlayer audioPlayer;
+//    AudioPlayer _player = AudioPlayer();
 
-    var _statusController = StreamController<bool>();
-    Stream<bool> get outStatus => _statusController.stream;
-    Sink<bool> get inStatus => _statusController.sink;
+    var _statusController = BehaviorSubject<int>();
+    Stream<int> get outStatus => _statusController.stream;
+    Sink<int> get inStatus => _statusController.sink;
+    int get getStatus => _statusController.value;
 
-    var _indexController = StreamController<int>();
+    var _indexController = BehaviorSubject<int>();
     Stream<int> get outIndex => _indexController.stream;
     Sink<int> get inInDex => _indexController.sink;
+    int get getIndex => _indexController.value;
 
-    var _playlistController = StreamController<List<Music>>();
+    var _playlistController = BehaviorSubject<List<Music>>();
     Stream<List> get outPlaylist => _playlistController.stream.map((v) => v);
     Sink<List> get inPlaylist => _playlistController.sink;
+    List<Music> get getPlaylist => _playlistController.value;
 
-    var _musicContoller = StreamController<Music>();
+    var _musicContoller = BehaviorSubject<Music>();
     Stream<Music> get outMusic => _musicContoller.stream;
+    Music get getMusic => _musicContoller.value;
     Sink<Music>  get inMusic => _musicContoller.sink;
-
-    var _audioPlayerControler = StreamController<AudioPlayer>();
-    Stream<AudioPlayer> get outAudioPlayer => _audioPlayerControler.stream;
-    Sink<AudioPlayer>  get inAudioPlayer => _audioPlayerControler.sink;
 
     
     void setMusic(Music music){
@@ -45,19 +46,16 @@ class PlayerControl extends BlocBase{
         inInDex.add(data);
     }
 
-    void setStatus(bool data){
+    void setStatus(int data){
         inStatus.add(data);
     }
     
     void play(int index){
-        audioPlayer.play(_playlist[index].urlAudio);
         setIndex(index);
         setMusic(_playlist[index]);
     }
 
-    int getIndex(){
-        return _index;
-    }
+
     
     
 //    @override
@@ -99,7 +97,6 @@ class PlayerControl extends BlocBase{
         _indexController.close();
         _playlistController.close();
         _statusController.close();
-        _audioPlayerControler.close();
         _musicContoller.close();
     }
 }

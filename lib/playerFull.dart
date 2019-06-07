@@ -1,52 +1,46 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
-//import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-//import 'package:audioplayer/audioplayer.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
-import 'package:spotjams/entities/Music.dart';
+
+
 
 import 'home_page.dart';
 
-import 'home_page.dart';
-
-const double minHeight = 80;
-enum PlayerState { stopped, playing, paused }
-int index;
-
-
-List<Music> playlist = new List<Music>();
-final audioUrls = [
-    "https://api.soundcloud.com/tracks/266891990/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
-    "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
-    "https://api.soundcloud.com/tracks/258735531/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
-    "https://api.soundcloud.com/tracks/9540779/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
-    "https://api.soundcloud.com/tracks/9540352/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
-    "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
-];
 
 
 
+//
+//List<Music> playlist = new List<Music>();
+//final audioUrls = [
+//    "https://api.soundcloud.com/tracks/266891990/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+//    "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+//    "https://api.soundcloud.com/tracks/258735531/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+//    "https://api.soundcloud.com/tracks/9540779/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+//    "https://api.soundcloud.com/tracks/9540352/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+//    "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P",
+//];
+//
+//
+//
 
 
+//
+//const url0 = "https://mega.nz/#!09tUSKjb!CbaTFh8fiAzDKzG8RR1iN6li0HdgZO4oHEeQ-7RsNTM";
+//const url = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
+//const url2 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
+//const url3 = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
 
-const url0 = "https://mega.nz/#!09tUSKjb!CbaTFh8fiAzDKzG8RR1iN6li0HdgZO4oHEeQ-7RsNTM";
-const url = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
-const url2 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
-const url3 = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
 
 class PlayerFull extends StatefulWidget {
 
-  final playerInfo;
-  PlayerFull({Key key,@required this.playerInfo}) : super(key: key);
+
+  PlayerFull({Key key}) : super(key: key);
 
   @override
-    _PlayerFull createState() => new _PlayerFull(playerInfo);
+    _PlayerFull createState() => new _PlayerFull();
 
 }
 
@@ -54,143 +48,119 @@ class _PlayerFull extends State<PlayerFull>
     with SingleTickerProviderStateMixin {
 
 
-    //____________________________________________________
-
-    final playerInfo;
-    AudioPlayer audioPlayer  =  AudioPlayer();
-
-
 
 
     @override
     void initState() {
-      addmusic();
       super.initState();
 
     }
-
-    void addmusic(){
-//        Music music = new Music();
-//        playlist = new List<Music>();
-//        music.artist = "Desconhecido";
-//        music.nameMusic = "Eletro dodo";
-//        music.urlAudio = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-//        music.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
-//        playlist.add(music);
-//
-//        Music music2 = new Music();
-//        music2.artist = "Desconhecido";
-//        music2.nameMusic = "Chata";
-//        music2.urlAudio = "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-//        music2.urlAlbum = "https://www.google.com.br/url?sa=i&source=images&cd=&ved=2ahUKEwjSuPi_vNXiAhXzJrkGHU8sAs4QjRx6BAgBEAU&url=http%3A%2F%2Fwww.openculture.com%2F2018%2F02%2Fenter-the-cover-art-archive.html&psig=AOvVaw3V921WZ51dPB9kqf7Wnohw&ust=1559931680266148";
-//        playlist.add(music2);
-//        index = 0;
-
-    }
-
 
 
   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     @override
     Widget build(BuildContext context) {
-//        final playerInfo = Provider.of<PlayerInfo>(context);
-        return Scaffold(
-//            body: Align(
-//              alignment: Alignment.topLeft,
-              body: SafeArea(
-                child: Column(
-                  children: <Widget> [
-                    Header(),
-                    HeaderMusic(artistName: "Martin", musicName: "Acces",),
-                    CardAlbum(" "),
-                    Container(
-                        child:  Padding(
-                            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+            return  Scaffold(
+
+                        body: SafeArea(
+                            child: Column(
                                 children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.arrow_back_ios),
-                                    color: Colors.grey,
-                                    iconSize: 48,
-                                    onPressed: previous,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.play_arrow),
-                                    color: Colors.grey,
-                                    iconSize: 48,
-                                    onPressed: play
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.arrow_forward_ios),
-                                    color: Colors.grey,
-                                    iconSize: 48,
-                                    onPressed: next,
-                                  ),
+                                    Header(),
+                                    HeaderMusic(),
+                                    CardAlbum(" "),
+                                    Container(
+                                        child: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+                                            child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                    IconButton(
+                                                        icon: Icon(Icons.arrow_back_ios),
+                                                        color: Colors.grey,
+                                                        iconSize: 48,
+                                                        onPressed: previous,
+                                                    ),
+                                                    IconButton(
+                                                        icon: Icon(Icons.play_arrow),
+                                                        color: Colors.grey,
+                                                        iconSize: 48,
+                                                        onPressed: play
+                                                    ),
+                                                    IconButton(
+                                                        icon: Icon(Icons.arrow_forward_ios),
+                                                        color: Colors.grey,
+                                                        iconSize: 48,
+                                                        onPressed: next,
+                                                    ),
+                                                ]
+                                            )
+                                        )
+                                    ),
                                 ]
+                                //              )
                             )
                         )
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.play_arrow),
-                      onPressed: play,
-                    )
-                ]
-                )
-//              )
-            )
-        );
+                    );
+//        }
     }
 
 
 
   void play() async{
 
-    await audioPlayer.play(playlist[index].urlAudio);
-    print(teste);
-//    audioPlayer.onDurationChanged.listen((Duration d) {
-//      print('Max duration:');
-//
-//    });
-//      Duration audioPlayer.duration;
-//      print(() => duration = audioPlayer.duration);
+      if (playerControl.getStatus == 0) {
+          audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
+          playerControl.setStatus(1);
+      } else if (playerControl.getStatus == 1){
+          audioPlayer.pause();
+          playerControl.setStatus(2);
+      }
+      else {
+          audioPlayer.resume();
+          playerControl.setStatus(1);
+      }
+      print(playerControl.getStatus);
   }
 
-    void pause() async{
-      await audioPlayer.pause();
 
-    }
 
 
     void next(){
-        if (index < playlist.length -1 ){
-          index++;
+//        audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) => {
+//            print('Current player state: $s');
+//            setState(() => palyerState = s);
+//        });
+        print("ENTROU");
+        if (playerControl.getIndex < playerControl.getPlaylist.length -1 ){
+            print("Primeiro IF");
+            int index = playerControl.getIndex;
+            playerControl.setIndex(index + 1);
+            playerControl.setMusic(playerControl.getPlaylist[index + 1]);
 
-          audioPlayer.play(playlist[index].urlAudio);
+            audioPlayer.play(playerControl.getPlaylist[index + 1].urlAudio);
 
         }else{
-          index = 0;
-
-          audioPlayer.play(playlist[0].urlAudio);
-
+            print("Entrou ESLE");
+            playerControl.setIndex(0);
+            audioPlayer.play(playerControl.getPlaylist[0].urlAudio);
+            playerControl.setMusic(playerControl.getPlaylist[0]);
         }
 
 
     }
 
     void previous(){
-      if (index > 0 ){
-        index--;
-        print(playerInfo.index);
-        audioPlayer.play(playlist[index].urlAudio);
-        return;
-      }
+        if (playerControl.getIndex > 0 ){
+            print("Primeiro IF");
+            int index = playerControl.getIndex;
+            playerControl.setIndex(index - 1);
+            playerControl.setMusic(playerControl.getPlaylist[index - 1]);
+            audioPlayer.play(playerControl.getPlaylist[index - 1].urlAudio);
+
+        }
 
     }
-
-  _PlayerFull(this.playerInfo);
-
 
 }
 
@@ -198,60 +168,61 @@ class _PlayerFull extends State<PlayerFull>
 
 class CardAlbum extends StatelessWidget{
     String image;
-//    final String assetName;
-//    final double offset;
-//
-//    const CardAlbum({
-//        Key key,
-//        @required this.assetName,
-//        @required this.offset,
-//    }) : super(key: key);
 
     @override
     Widget build(BuildContext context) {
 //        double gauss = math.exp(-(math.pow((offset.abs() - 0.5), 2) / 0.08));
-      return Card(
-          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+        return StreamBuilder(
+            stream: playerControl.outMusic,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                return Card(
+                    margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
 //          shape: RoundedRectangleBorder(
 //            borderRadius: BorderRadius.circular(20.0)
 //          ),
-          color: Colors.green,
-          child: Container(
-            width: 320.0,
-            height: 320.0,
-            child: Image.network(
-              'https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true'
+                    color: Colors.green,
+                    child: Container(
+                        width: 320.0,
+                        height: 320.0,
+                        child: Image.network(
+                            snapshot.data.urlAlbum
 //                image,
-            ),
-          ),
+                        ),
+                    ),
+                );
+            }
         );
     }
     CardAlbum(String image);
 }
 
 class HeaderMusic extends StatelessWidget{
-  final String musicName;
-  final String artistName;
+
 
   const HeaderMusic(
-        {Key key, @required this.musicName, @required this.artistName})
+        {Key key})
         : super(key: key);
 
   @override
   Widget build(BuildContext context){
-    return Container(
-        child:  Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 22.0),
-            child: Align(
-                alignment: Alignment.topLeft,
-                child: Column(
-                  children: <Widget>[
-                    Text(musicName),
-                    Text(artistName)
-                  ],
+    return StreamBuilder(
+        stream: playerControl.outMusic,
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+            return Container(
+                child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 22.0),
+                    child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Column(
+                            children: <Widget>[
+                                Text(snapshot.data.nameMusic),
+                                Text(snapshot.data.artist)
+                            ],
+                        )
+                    )
                 )
-            )
-        )
+            );
+        }
     );
   }
 }

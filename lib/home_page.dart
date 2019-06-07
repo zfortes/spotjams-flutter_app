@@ -19,9 +19,18 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:spotjams/entities/Music.dart';
 const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
+
+AudioPlayerState playerState;
+enum PlayerState { stopped, playing, paused }
+
+
+
+final AudioPlayer audioPlayer = AudioPlayer();
+AudioPlayerState _audioPlayerState;
+
 final PlayerControl playerControl = BlocProvider.getBloc<PlayerControl>();
 const int teste = 1;
-
+List<Music> playlist;
 
 
 class HomePage extends StatefulWidget {
@@ -51,13 +60,13 @@ class _HomePage extends State<HomePage> {
         music2.artist = "Desconhecido";
         music2.nameMusic = "Chata";
         music2.urlAudio = "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-        music2.urlAlbum = "https://www.google.com.br/url?sa=i&source=images&cd=&ved=2ahUKEwjSuPi_vNXiAhXzJrkGHU8sAs4QjRx6BAgBEAU&url=http%3A%2F%2Fwww.openculture.com%2F2018%2F02%2Fenter-the-cover-art-archive.html&psig=AOvVaw3V921WZ51dPB9kqf7Wnohw&ust=1559931680266148";
+        music2.urlAlbum = "https://scontent-ams3-1.cdninstagram.com/vp/0793e118389fa95928869b8ed6662efa/5D41F37A/t51.2885-15/e35/26155550_172117836734423_2160437892134993920_n.jpg?_nc_ht=scontent-ams3-1.cdninstagram.com&se=8&ig_cache_key=MTY4NjU5NTQ4NzczMTYyNjU0OQ%3D%3D.2";
         playlist.add(music2);
 
         playerControl.setPlaylist(playlist);
-        playerControl.setMusic(playlist[1]);
-        playerControl.setIndex(1);
-        playerControl.setStatus(false);
+        playerControl.setMusic(playlist[0]);
+        playerControl.setIndex(0);
+        playerControl.setStatus(0);
     }
 
 
@@ -108,58 +117,76 @@ class MiniPlayer extends StatelessWidget{
   Widget build(BuildContext context){
 
 //    final playerInfo = Provider.of<PlayerInfo>(context);
-    return Row(
-//        Consumer<PlayerInfo>(
-//      builder: (context, palyerInfo, child)=> Container(
-//        color: Colors.blueGrey,
-//        width: MediaQuery.of(context).size.width / 1.080,
-//        child: Row(
-          children: <Widget>[
-            Container(
-                    height: 50.0,
-                    child: Image.network("https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true"),
-            ),
-            StreamBuilder(
-                stream: playerControl.outMusic,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return Text(snapshot.data.nameMusic);
-                }
+    return StreamBuilder(
+            stream: playerControl.outMusic,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+                return Row(
+        //        Consumer<PlayerInfo>(
+        //      builder: (context, palyerInfo, child)=> Container(
+        //        color: Colors.blueGrey,
+        //        width: MediaQuery.of(context).size.width / 1.080,
+        //        child: Row(
+                    children: <Widget>[
+                        Container(
+                            height: 50.0,
+                            child: Image.network(
+                                snapshot.data.urlAlbum),
+                        ),
+                        Container(
+                            child: Text(snapshot.data.nameMusic),
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.arrow_left),
+                            onPressed: () {
+                                Navigator.push(
+                                    context, new MaterialPageRoute(
+                                    builder: (context) => new PlayerFull()));
+                            }
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.pause_circle_filled),
+                            onPressed: () => pause(),
 
-            ),
-            IconButton(
-                icon: Icon(Icons.arrow_left),
-                onPressed: () {
-                  Navigator.push(
-                      context, new MaterialPageRoute(
-                      builder: (context) => new PlayerFull()));
-                }
-            ),
-            IconButton(
-              icon: Icon(Icons.pause_circle_filled),
-              onPressed: () => pause(),
-
-            ),
-            IconButton(
-              icon: Icon(Icons.play_circle_filled),
-              onPressed: () => play(),
-
-            )
-          ],
-//        ),
-//      ),
-    );
-  }
+                        ),
+                        IconButton(
+                            icon: Icon(Icons.play_circle_filled),
+                            onPressed: () => play(snapshot.data),
+                        ),
+                    ],
+        //        ),
+        //      ),
+                );
+            }
+        );
+    }
 
 
-  void play(){
+
+  void play(Music music) {
 //      playerControl.play(playerControl.getIndex());
-      print("Teste");
-      print(playerControl.outIndex);
+      if (playerControl.getStatus == 0) {
+          audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
+          playerControl.setStatus(1);
+      } else if (playerControl.getStatus == 1){
+          audioPlayer.pause();
+          playerControl.setStatus(2);
+      }
+      else {
+          audioPlayer.resume();
+          playerControl.setStatus(1);
+      }
+      print(playerControl.getStatus);
 
   }
 
   void pause(){
 
+
+
+
+    audioPlayer.state = playerState;
+    playerState = audioPlayer.state;
+    print(playerState);
   }
 }
 
