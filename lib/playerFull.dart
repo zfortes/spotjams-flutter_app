@@ -69,6 +69,7 @@ class _PlayerFull extends State<PlayerFull>
                                     Header(),
                                     HeaderMusic(),
                                     CardAlbum(" "),
+                                    ProgressBar(),
                                     Container(
                                         child: Padding(
                                             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
@@ -241,49 +242,36 @@ class HeaderMusic extends StatelessWidget{
   }
 }
 
-//class ControlButtons extends StatelessWidget {
-//    @override
-//    Widget build(BuildContext context) {
-//        return Container(
-//            child:  Padding(
-//            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 22.0),
-//                child: Row(
-//                    mainAxisAlignment: MainAxisAlignment.center,
-//                    children: <Widget>[
-//                    IconButton(
-//                        icon: Icon(Icons.arrow_back_ios),
-//                        color: Colors.grey,
-//                        iconSize: 48,
-//                        onPressed: play,
-//                          ),
-//                          Icon(
-//                            Icons.play_arrow,
-//                            color: Colors.grey,
-//                            size: 75,
-//                           ),
-//                          Icon(
-//                            Icons.arrow_forward_ios,
-//                            color: Colors.grey,
-//                            size: 48,
-//                          )
-//                    ]
-//                )
-//            )
-//        );
-//
-////        );
-//    }
-//}
+class ProgressBar extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: StreamBuilder(
+  //        stream: ,
+            builder: (BuildContext context, AsyncSnapshot snap){
+                return Container(
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: Column(
+                        children: <Widget>[
+                            Row(
+                                children: <Widget>[
+                                  Text("1:15"),
+                                  Spacer(),
+                                  Text("3:42"),
+                                ],
+                            ),
+                            LinearProgressIndicator(value: 1, valueColor: ,),
+                        ],
 
+                    )
+                );
+            },
+        ),
+    );
+  }
+}
 
 class Header extends StatelessWidget {
-//    final double fontSize;
-//    final double topMargin;
-//
-//    const Header(
-//        {Key key, @required this.fontSize, @required this.topMargin})
-//        : super(key: key);
-
     @override
     Widget build(BuildContext context) {
       return Container(
