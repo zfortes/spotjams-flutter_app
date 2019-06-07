@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/painting.dart';
+import 'package:spotjams/blocs/playerControl.dart';
 //import 'package:provider/provider.dart';
 import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
@@ -10,26 +13,15 @@ import 'package:spotjams/playerWidget.dart';
 import 'package:spotjams/sliding_cards.dart';
 import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:provider/provider.dart';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:spotjams/entities/Music.dart';
 const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
-
+final PlayerControl playerControl = BlocProvider.getBloc<PlayerControl>();
 const int teste = 1;
 
-class PlayerInfo extends ChangeNotifier{
-  bool status;
-  int indexMusic;
-  List<Music> playlistOn;
-  int index;
-  Music activMusic;
-  AudioPlayer audioPlayer;
-  PlayerInfo(){
-    this.audioPlayer = new AudioPlayer();
-  }
-}
 
 
 class HomePage extends StatefulWidget {
@@ -40,15 +32,41 @@ class HomePage extends StatefulWidget {
 
 
 class _HomePage extends State<HomePage> {
-  PlayerInfo playerInfo = new PlayerInfo();
+//  PlayerInfo playerInfo = new PlayerInfo();
 
 //  AudioPlayer audioPlayer = new AudioPlayer();
-  @override
+
+
+
+    _HomePage(){
+        Music music = new Music();
+        playlist = new List<Music>();
+        music.artist = "Desconhecido";
+        music.nameMusic = "Eletro dodo";
+        music.urlAudio = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
+        music.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
+        playlist.add(music);
+
+        Music music2 = new Music();
+        music2.artist = "Desconhecido";
+        music2.nameMusic = "Chata";
+        music2.urlAudio = "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
+        music2.urlAlbum = "https://www.google.com.br/url?sa=i&source=images&cd=&ved=2ahUKEwjSuPi_vNXiAhXzJrkGHU8sAs4QjRx6BAgBEAU&url=http%3A%2F%2Fwww.openculture.com%2F2018%2F02%2Fenter-the-cover-art-archive.html&psig=AOvVaw3V921WZ51dPB9kqf7Wnohw&ust=1559931680266148";
+        playlist.add(music2);
+
+        playerControl.setPlaylist(playlist);
+        playerControl.setMusic(playlist[1]);
+        playerControl.setIndex(1);
+        playerControl.setStatus(false);
+    }
+
+
+
+    @override
   Widget build(BuildContext context) {
+//        final PlayerControl _playerControl = BlocProvider.getBloc<PlayerControl>();
     return Container(
-        child: ChangeNotifierProvider(
-            builder: (context) => PlayerInfo(),
-            child: Scaffold(
+        child: Scaffold(
               backgroundColor: Colors.white,
               body: Stack(
                 children: <Widget> [
@@ -76,8 +94,8 @@ class _HomePage extends State<HomePage> {
                 ],
               )
             )
-            )
-      );
+            );
+
     }
 
   void iniciar(){print("Teste");}
@@ -88,44 +106,60 @@ class MiniPlayer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    final playerInfo = Provider.of<PlayerInfo>(context);
-    return Consumer<PlayerInfo>(
-      builder: (context, palyerInfo, child)=> Container(
-        color: Colors.blueGrey,
-        width: MediaQuery.of(context).size.width / 1.080,
-        child: Row(
+
+//    final playerInfo = Provider.of<PlayerInfo>(context);
+    return Row(
+//        Consumer<PlayerInfo>(
+//      builder: (context, palyerInfo, child)=> Container(
+//        color: Colors.blueGrey,
+//        width: MediaQuery.of(context).size.width / 1.080,
+//        child: Row(
           children: <Widget>[
+            Container(
+                    height: 50.0,
+                    child: Image.network("https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true"),
+            ),
+            StreamBuilder(
+                stream: playerControl.outMusic,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return Text(snapshot.data.nameMusic);
+                }
+
+            ),
             IconButton(
                 icon: Icon(Icons.arrow_left),
                 onPressed: () {
                   Navigator.push(
                       context, new MaterialPageRoute(
-                      builder: (context) => new PlayerFull(playerInfo: playerInfo,)));
+                      builder: (context) => new PlayerFull()));
                 }
             ),
             IconButton(
               icon: Icon(Icons.pause_circle_filled),
-              onPressed: () => pause(playerInfo),
+              onPressed: () => pause(),
 
             ),
             IconButton(
               icon: Icon(Icons.play_circle_filled),
-              onPressed: () => play(playerInfo),
+              onPressed: () => play(),
 
             )
           ],
-        ),
-      ),
+//        ),
+//      ),
     );
   }
 
 
-  void play(PlayerInfo player){
-    player.audioPlayer.resume();
+  void play(){
+//      playerControl.play(playerControl.getIndex());
+      print("Teste");
+      print(playerControl.outIndex);
+
   }
 
-  void pause(PlayerInfo player){
-    player.audioPlayer.pause();
+  void pause(){
+
   }
 }
 
