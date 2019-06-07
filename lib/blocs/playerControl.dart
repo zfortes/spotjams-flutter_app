@@ -13,10 +13,10 @@ class PlayerControl extends BlocBase{
     Music _music;
 //    AudioPlayer _player = AudioPlayer();
 
-    var _statusController = BehaviorSubject<int>();
-    Stream<int> get outStatus => _statusController.stream;
-    Sink<int> get inStatus => _statusController.sink;
-    int get getStatus => _statusController.value;
+    var _statusController = BehaviorSubject<dynamic>();
+    Stream<dynamic> get outStatus => _statusController.stream;
+    Sink<dynamic> get inStatus => _statusController.sink;
+    dynamic get getStatus => _statusController.value;
 
     var _indexController = BehaviorSubject<int>();
     Stream<int> get outIndex => _indexController.stream;
@@ -46,7 +46,7 @@ class PlayerControl extends BlocBase{
         inInDex.add(data);
     }
 
-    void setStatus(int data){
+    void setStatus(var data){
         inStatus.add(data);
     }
     

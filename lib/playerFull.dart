@@ -108,17 +108,18 @@ class _PlayerFull extends State<PlayerFull>
 
 
   void play() async{
+      print("Play");
+      if (playerControl.getStatus == PlayerState.paused) {
+          await audioPlayer.resume();
+          playerControl.setStatus(PlayerState.playing);
 
-      if (playerControl.getStatus == 0) {
-          audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
-          playerControl.setStatus(1);
-      } else if (playerControl.getStatus == 1){
-          audioPlayer.pause();
-          playerControl.setStatus(2);
+      } else if (playerControl.getStatus == PlayerState.playing){
+          await audioPlayer.pause();
+          playerControl.setStatus(PlayerState.paused);
       }
       else {
-          audioPlayer.resume();
-          playerControl.setStatus(1);
+          await audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
+          playerControl.setStatus(PlayerState.playing);
       }
       print(playerControl.getStatus);
   }
@@ -126,38 +127,33 @@ class _PlayerFull extends State<PlayerFull>
 
 
 
-    void next(){
-//        audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) => {
-//            print('Current player state: $s');
-//            setState(() => palyerState = s);
-//        });
-        print("ENTROU");
+    void next() async{
+        print("Next");
         if (playerControl.getIndex < playerControl.getPlaylist.length -1 ){
-            print("Primeiro IF");
             int index = playerControl.getIndex;
+            await audioPlayer.play(playerControl.getPlaylist[index + 1].urlAudio);
             playerControl.setIndex(index + 1);
             playerControl.setMusic(playerControl.getPlaylist[index + 1]);
-
-            audioPlayer.play(playerControl.getPlaylist[index + 1].urlAudio);
-
+            playerControl.setStatus(PlayerState.playing);
         }else{
-            print("Entrou ESLE");
             playerControl.setIndex(0);
-            audioPlayer.play(playerControl.getPlaylist[0].urlAudio);
+            await audioPlayer.stop();
+            await audioPlayer.setUrl(playerControl.getPlaylist[0].urlAudio);
             playerControl.setMusic(playerControl.getPlaylist[0]);
+            playerControl.setStatus(PlayerState.stopped);
         }
 
 
     }
 
-    void previous(){
+    void previous() async{
+        print("Previous");
         if (playerControl.getIndex > 0 ){
             print("Primeiro IF");
             int index = playerControl.getIndex;
             playerControl.setIndex(index - 1);
             playerControl.setMusic(playerControl.getPlaylist[index - 1]);
-            audioPlayer.play(playerControl.getPlaylist[index - 1].urlAudio);
-
+            await audioPlayer.play(playerControl.getPlaylist[index - 1].urlAudio);
         }
 
     }

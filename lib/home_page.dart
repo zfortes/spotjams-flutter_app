@@ -20,7 +20,6 @@ import 'package:spotjams/entities/Music.dart';
 const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
 
-AudioPlayerState playerState;
 enum PlayerState { stopped, playing, paused }
 
 
@@ -66,7 +65,7 @@ class _HomePage extends State<HomePage> {
         playerControl.setPlaylist(playlist);
         playerControl.setMusic(playlist[0]);
         playerControl.setIndex(0);
-        playerControl.setStatus(0);
+        playerControl.setStatus(PlayerState.stopped);
     }
 
 
@@ -143,18 +142,17 @@ class MiniPlayer extends StatelessWidget{
                                     builder: (context) => new PlayerFull()));
                             }
                         ),
-                        IconButton(
-                            icon: Icon(Icons.pause_circle_filled),
-                            onPressed: () => pause(),
-
-                        ),
+//                        IconButton(
+//                            icon: Icon(Icons.pause_circle_filled),
+//                            onPressed: () => pause(),
+//
+//                        ),
                         IconButton(
                             icon: Icon(Icons.play_circle_filled),
-                            onPressed: () => play(snapshot.data),
+                            onPressed: () => play(),
                         ),
                     ],
-        //        ),
-        //      ),
+
                 );
             }
         );
@@ -162,32 +160,23 @@ class MiniPlayer extends StatelessWidget{
 
 
 
-  void play(Music music) {
-//      playerControl.play(playerControl.getIndex());
-      if (playerControl.getStatus == 0) {
-          audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
-          playerControl.setStatus(1);
-      } else if (playerControl.getStatus == 1){
-          audioPlayer.pause();
-          playerControl.setStatus(2);
+  void play() async{
+      print("Play");
+      if (playerControl.getStatus == PlayerState.paused) {
+          await audioPlayer.resume();
+          playerControl.setStatus(PlayerState.playing);
+
+      } else if (playerControl.getStatus == PlayerState.playing){
+          await audioPlayer.pause();
+          playerControl.setStatus(PlayerState.paused);
       }
       else {
-          audioPlayer.resume();
-          playerControl.setStatus(1);
+          await audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
+          playerControl.setStatus(PlayerState.playing);
       }
       print(playerControl.getStatus);
-
   }
 
-  void pause(){
-
-
-
-
-    audioPlayer.state = playerState;
-    playerState = audioPlayer.state;
-    print(playerState);
-  }
 }
 
 
@@ -206,212 +195,3 @@ class Header extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//import 'dart:async';
-//import 'dart:io';
-//
-//import 'package:audioplayers/audio_cache.dart';
-//import 'package:audioplayers/audioplayers.dart';
-//import 'package:flutter/material.dart';
-//import 'package:http/http.dart';
-//import 'package:path_provider/path_provider.dart';
-//
-//import 'playerFull.dart';
-//
-//typedef void OnError(Exception exception);
-//
-//const kUrl1 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
-//const kUrl2 = 'https://luan.xyz/files/audio/nasa_on_a_mission.mp3';
-//const kUrl3 = 'http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1xtra_mf_p';
-//
-//void main() {
-//  runApp(new MaterialApp(home: new ExampleApp()));
-//}
-//
-//class ExampleApp extends StatefulWidget {
-//  @override
-//  _ExampleAppState createState() => new _ExampleAppState();
-//}
-//
-//class _ExampleAppState extends State<ExampleApp> {
-////  AudioCache audioCache = AudioCache();
-//  AudioPlayer advancedPlayer = AudioPlayer();
-////  String localFilePath;
-//
-////  Future _loadFile() async {
-////    final bytes = await readBytes(kUrl1);
-////    final dir = await getApplicationDocumentsDirectory();
-////    final file = File('${dir.path}/audio.mp3');
-////
-////    await file.writeAsBytes(bytes);
-////    if (await file.exists()) {
-////      setState(() {
-////        localFilePath = file.path;
-////      });
-////    }
-////  }
-//
-//  Widget _tab(List<Widget> children) {
-//    return Center(
-//      child: Container(
-//        padding: EdgeInsets.all(16.0),
-//        child: Column(
-//          children: children
-//              .map((w) => Container(child: w, padding: EdgeInsets.all(6.0)))
-//              .toList(),
-//        ),
-//      ),
-//    );
-//  }
-//
-////  Widget _btn(String txt, VoidCallback onPressed) {
-////    return ButtonTheme(
-////        minWidth: 48.0,
-////        child: RaisedButton(child: Text(txt), onPressed: onPressed));
-////  }
-//
-//  Widget remoteUrl() {
-//    return PlayerWidget(url: kUrl1);
-////      SingleChildScrollView(
-////      child: _tab([
-////        Text(
-////          'Sample 1 ($kUrl1)',
-////          style: TextStyle(fontWeight: FontWeight.bold),
-////        ),
-////        PlayerWidget(url: kUrl1),
-////      ]),
-////    );
-//  }
-//
-////  Widget localFile() {
-////    return _tab([
-////      Text('File: $kUrl1'),
-////      _btn('Download File to your Device', () => _loadFile()),
-////      Text('Current local file path: $localFilePath'),
-////      localFilePath == null
-////          ? Container()
-////          : PlayerWidget(url: localFilePath, isLocal: true),
-////    ]);
-////  }
-//
-////  Widget localAsset() {
-////    return _tab([
-////      Text('Play Local Asset \'audio.mp3\':'),
-////      _btn('Play', () => audioCache.play('audio.mp3')),
-////      Text('Loop Local Asset \'audio.mp3\':'),
-////      _btn('Loop', () => audioCache.loop('audio.mp3')),
-////      Text('Play Local Asset \'audio2.mp3\':'),
-////      _btn('Play', () => audioCache.play('audio2.mp3')),
-////      Text('Play Local Asset In Low Latency \'audio.mp3\':'),
-////      _btn('Play',
-////              () => audioCache.play('audio.mp3', mode: PlayerMode.LOW_LATENCY)),
-////      Text('Play Local Asset In Low Latency \'audio2.mp3\':'),
-////      _btn('Play',
-////              () => audioCache.play('audio2.mp3', mode: PlayerMode.LOW_LATENCY)),
-////    ]);
-////  }
-////
-////  Widget notification() {
-////    return _tab([
-////      Text('Play notification sound: \'messenger.mp3\':'),
-////      _btn(
-////          'Play', () => audioCache.play('messenger.mp3', isNotification: true)),
-////    ]);
-////  }
-//
-////  Widget advanced() {
-////    return _tab([
-////      Column(children: [
-////        Text('Source Url'),
-////        Row(children: [
-////          _btn('Audio 1', () => advancedPlayer.setUrl(kUrl1)),
-////          _btn('Audio 2', () => advancedPlayer.setUrl(kUrl2)),
-////          _btn('Stream', () => advancedPlayer.setUrl(kUrl3)),
-////        ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
-////      ]),
-////      Column(children: [
-////        Text('Release Mode'),
-////        Row(children: [
-////          _btn('STOP', () => advancedPlayer.setReleaseMode(ReleaseMode.STOP)),
-////          _btn('LOOP', () => advancedPlayer.setReleaseMode(ReleaseMode.LOOP)),
-////          _btn('RELEASE',
-////                  () => advancedPlayer.setReleaseMode(ReleaseMode.RELEASE)),
-////        ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
-////      ]),
-////      new Column(children: [
-////        Text('Volume'),
-////        Row(children: [
-////          _btn('0.0', () => advancedPlayer.setVolume(0.0)),
-////          _btn('0.5', () => advancedPlayer.setVolume(0.5)),
-////          _btn('1.0', () => advancedPlayer.setVolume(1.0)),
-////          _btn('2.0', () => advancedPlayer.setVolume(2.0)),
-////        ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
-////      ]),
-////      new Column(children: [
-////        Text('Control'),
-////        Row(children: [
-////          _btn('resume', () => advancedPlayer.resume()),
-////          _btn('pause', () => advancedPlayer.pause()),
-////          _btn('stop', () => advancedPlayer.stop()),
-////          _btn('release', () => advancedPlayer.release()),
-////        ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
-////      ]),
-////      new Column(children: [
-////        Text('Seek in milliseconds'),
-////        Row(children: [
-////          _btn('100ms', () => advancedPlayer.seek(Duration(milliseconds: 100))),
-////          _btn('500ms', () => advancedPlayer.seek(Duration(milliseconds: 500))),
-////          _btn('1s', () => advancedPlayer.seek(Duration(seconds: 1))),
-////          _btn('1.5s', () => advancedPlayer.seek(Duration(milliseconds: 1500))),
-////        ], mainAxisAlignment: MainAxisAlignment.spaceEvenly),
-////      ]),
-////    ]);
-////  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(body: PlayerWidget(url: kUrl1,));
-////      DefaultTabController(
-////      length: 1,
-////      child: Scaffold(
-////        appBar: AppBar(
-////          bottom: TabBar(
-////            tabs: [
-////              Tab(text: 'Remote Url'),
-////            ],
-////          ),
-////          title: Text('audioplayers Example'),
-////        ),
-////        body: TabBarView(
-////          children: [
-////            PlayerWidget(url: kUrl1)
-//////            remoteUrl(),
-////          ],
-////        ),
-////      ),
-////    );
-//  }
-//}
-
-
-
-
-
-
-
