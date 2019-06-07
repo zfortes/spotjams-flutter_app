@@ -116,46 +116,54 @@ class MiniPlayer extends StatelessWidget{
   Widget build(BuildContext context){
 
 //    final playerInfo = Provider.of<PlayerInfo>(context);
-    return StreamBuilder(
-            stream: playerControl.outMusic,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-                return Row(
-        //        Consumer<PlayerInfo>(
-        //      builder: (context, palyerInfo, child)=> Container(
-        //        color: Colors.blueGrey,
-        //        width: MediaQuery.of(context).size.width / 1.080,
-        //        child: Row(
-                    children: <Widget>[
-                        Container(
-                            height: 50.0,
-                            child: Image.network(
-                                snapshot.data.urlAlbum),
-                        ),
-                        Container(
-                            child: Text(snapshot.data.nameMusic),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.arrow_left),
-                            onPressed: () {
-                                Navigator.push(
-                                    context, new MaterialPageRoute(
-                                    builder: (context) => new PlayerFull()));
-                            }
-                        ),
-//                        IconButton(
-//                            icon: Icon(Icons.pause_circle_filled),
-//                            onPressed: () => pause(),
-//
-//                        ),
-                        IconButton(
-                            icon: Icon(Icons.play_circle_filled),
-                            onPressed: () => play(),
-                        ),
-                    ],
+    return Container(
+                color: Colors.blueGrey,
+                width: MediaQuery.of(context).size.width / 1.080,
+                child: Row(
+                  children: <Widget>[
+                      Container(
+                          child: GestureDetector(
+                              onTap: () {
+                                  Navigator.push(
+                                  context, new MaterialPageRoute(
+                                  builder: (context) => PlayerFull()));
+                              },
+                              child: StreamBuilder(
+                                  stream: playerControl.outMusic,
+                                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                                          return Row(
+                                                 children: <Widget>[
+                                                     Container(
+                                                          height: 50.0,
+                                                          child: Image.network(
+                                                              snapshot.data.urlAlbum,
+                                                          ),
+                                                      ),
+                                                     Container(
+                                                       child: Text(snapshot.data.nameMusic),
+                                                     ),
+                                                 ]
+                                          );
 
-                );
-            }
+                                    }
+                               ),
+                          )
+                      ),
+                      StreamBuilder(
+                        stream: playerControl.outStatus,
+                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                              return IconButton(
+                                icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
+                                onPressed: () => play(),
+                              );
+                          },
+                      ),
+                  ],
+
+              )
         );
+
+
     }
 
 

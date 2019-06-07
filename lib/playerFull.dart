@@ -76,20 +76,24 @@ class _PlayerFull extends State<PlayerFull>
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
                                                     IconButton(
-                                                        icon: Icon(Icons.arrow_back_ios),
-                                                        color: Colors.grey,
+                                                        icon: Icon(Icons.skip_previous),
+                                                        color: Colors.black,
                                                         iconSize: 48,
                                                         onPressed: previous,
                                                     ),
-                                                    IconButton(
-                                                        icon: Icon(Icons.play_arrow),
-                                                        color: Colors.grey,
-                                                        iconSize: 48,
-                                                        onPressed: play
+                                                    StreamBuilder(
+                                                      stream: playerControl.outStatus,
+                                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                        return IconButton(
+                                                          icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
+                                                          iconSize: 65,
+                                                          onPressed: () => play(),
+                                                        );
+                                                      },
                                                     ),
                                                     IconButton(
-                                                        icon: Icon(Icons.arrow_forward_ios),
-                                                        color: Colors.grey,
+                                                        icon: Icon(Icons.skip_next),
+                                                        color: Colors.black,
                                                         iconSize: 48,
                                                         onPressed: next,
                                                     ),
@@ -148,12 +152,16 @@ class _PlayerFull extends State<PlayerFull>
 
     void previous() async{
         print("Previous");
-        if (playerControl.getIndex > 0 ){
-            print("Primeiro IF");
-            int index = playerControl.getIndex;
-            playerControl.setIndex(index - 1);
-            playerControl.setMusic(playerControl.getPlaylist[index - 1]);
-            await audioPlayer.play(playerControl.getPlaylist[index - 1].urlAudio);
+
+        int index = playerControl.getIndex;
+        if (index > 0 ){
+            if (await audioPlayer.play(playerControl.getPlaylist[index - 1].urlAudio) == 1) {
+                print("Primeiro IF");
+                playerControl.setIndex(index - 1);
+                playerControl.setStatus(PlayerState.playing);
+                playerControl.setMusic(playerControl.getPlaylist[index - 1]);
+            }
+
         }
 
     }
@@ -211,8 +219,18 @@ class HeaderMusic extends StatelessWidget{
                         alignment: Alignment.topLeft,
                         child: Column(
                             children: <Widget>[
-                                Text(snapshot.data.nameMusic),
-                                Text(snapshot.data.artist)
+                                Text(snapshot.data.nameMusic,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(snapshot.data.artist,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                )
                             ],
                         )
                     )
