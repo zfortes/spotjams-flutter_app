@@ -17,7 +17,7 @@ import 'package:spotjams/entities/Music.dart';
 const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
 const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
 
-
+const int teste = 1;
 
 class PlayerInfo extends ChangeNotifier{
   bool status;
