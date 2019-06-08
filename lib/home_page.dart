@@ -23,13 +23,17 @@ const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Desp
 enum PlayerState { stopped, playing, paused }
 
 
-
+//Section audioPlayer
 final AudioPlayer audioPlayer = AudioPlayer();
 AudioPlayerState _audioPlayerState;
+StreamSubscription _durationSubscription;
+StreamSubscription _positionSubscription;
+StreamSubscription _playerCompleteSubscription;
+Duration duration;
+Duration position;
 
 final PlayerControl playerControl = BlocProvider.getBloc<PlayerControl>();
 const int teste = 1;
-List<Music> playlist;
 
 
 class HomePage extends StatefulWidget {
@@ -48,6 +52,9 @@ class _HomePage extends State<HomePage> {
 
     _HomePage(){
         Music music = new Music();
+//        audioPlayer.stop();
+
+        List<Music> playlist;
         playlist = new List<Music>();
         music.artist = "Desconhecido";
         music.nameMusic = "Eletro dodo";
@@ -67,6 +74,13 @@ class _HomePage extends State<HomePage> {
         playerControl.setIndex(0);
         playerControl.setStatus(PlayerState.stopped);
     }
+
+    @override
+    void initState() {
+        super.initState();
+        _initAudioPlayer();
+    }
+
 
 
 
@@ -106,7 +120,51 @@ class _HomePage extends State<HomePage> {
 
     }
 
-  void iniciar(){print("Teste");}
+
+    void _initAudioPlayer() {
+        print("Testao");
+        _durationSubscription = audioPlayer.onDurationChanged.listen((duration) => playerControl.setDuration(duration));
+        _positionSubscription =
+            audioPlayer.onAudioPositionChanged.listen((p) => playerControl.setPosition(p));
+
+        audioPlayer.onPlayerCompletion.listen((event) {
+            onComplete();
+        });
+
+    }
+
+    void onComplete() async{
+        if (playerControl.getIndex < playerControl.getPlaylist.length -1 ){
+            int index = playerControl.getIndex;
+            await audioPlayer.play(playerControl.getPlaylist[index + 1].urlAudio);
+            playerControl.setIndex(index + 1);
+//            playerControl.setDuration(audioPlayer.dura)
+            playerControl.setMusic(playerControl.getPlaylist[index + 1]);
+            playerControl.setStatus(PlayerState.playing);
+        }else{
+            playerControl.setIndex(0);
+            await audioPlayer.stop();
+            await audioPlayer.setUrl(playerControl.getPlaylist[0].urlAudio);
+            playerControl.setMusic(playerControl.getPlaylist[0]);
+            playerControl.setPosition(Duration(milliseconds: 0));
+            playerControl.setStatus(PlayerState.stopped);
+        }
+    }
+
+
+
+
+
+    @override
+    void dispose() {
+        _durationSubscription?.cancel();
+        _positionSubscription?.cancel();
+        audioPlayer.stop();
+        audioPlayer.dispose();
+        _playerCompleteSubscription?.cancel();
+        super.dispose();
+    }
+
 }
 
 
@@ -114,7 +172,6 @@ class MiniPlayer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-
 //    final playerInfo = Provider.of<PlayerInfo>(context);
     return Container(
                 color: Colors.blueGrey,
@@ -162,14 +219,14 @@ class MiniPlayer extends StatelessWidget{
 
               )
         );
-
-
     }
 
 
 
   void play() async{
-      print("Play");
+
+
+
       if (playerControl.getStatus == PlayerState.paused) {
           await audioPlayer.resume();
           playerControl.setStatus(PlayerState.playing);
@@ -181,8 +238,13 @@ class MiniPlayer extends StatelessWidget{
       else {
           await audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
           playerControl.setStatus(PlayerState.playing);
+          audioPlayer.onDurationChanged.listen((duration) => playerControl.setDuration(duration));
       }
       print(playerControl.getStatus);
+      print("Posicao");
+      print(playerControl.getPosition);
+      print("Duraiton");
+      print(playerControl.getDuration);
   }
 
 }

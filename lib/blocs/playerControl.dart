@@ -56,34 +56,31 @@ class PlayerControl extends BlocBase{
     }
 
 
-    
-    
-//    @override
-//    void initState() {
-//        addmusic();
-//        super.initState();
-//
-//    }
+    AudioPlayerState _audioPlayerState;
+    StreamSubscription _durationSubscription;
+    StreamSubscription _positionSubscription;
+    StreamSubscription _playerCompleteSubscription;
+    Duration duration;
+    Duration position;
+//     positionController;
 
-//    void addmusic(){
-//        Music music = new Music();
-////        playlist = new List<Music>();
-//        music.artist = "Desconhecido";
-//        music.nameMusic = "Eletro dodo";
-//        music.urlAudio = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-//        music.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
-//        playlist.add(music);
-//
-//        Music music2 = new Music();
-//        music2.artist = "Desconhecido";
-//        music2.nameMusic = "Chata";
-//        music2.urlAudio = "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-//        music2.urlAlbum = "https://www.google.com.br/url?sa=i&source=images&cd=&ved=2ahUKEwjSuPi_vNXiAhXzJrkGHU8sAs4QjRx6BAgBEAU&url=http%3A%2F%2Fwww.openculture.com%2F2018%2F02%2Fenter-the-cover-art-archive.html&psig=AOvVaw3V921WZ51dPB9kqf7Wnohw&ust=1559931680266148";
-//        playlist.add(music2);
-//        index = 0;
-//
-//    }
+    var _durationController = BehaviorSubject<Duration>();
+    Stream<Duration> get outDuration => _durationController.stream.map((v) => v);
+    Sink<Duration> get inDuration => _durationController.sink;
+    Duration get getDuration => _durationController.value;
 
+    var _positionController = BehaviorSubject<Duration>();
+    Stream<Duration> get outPosition => _positionController.stream.map((v) => v);
+    Sink<Duration> get inPosition => _positionController.sink;
+    Duration get getPosition => _positionController.value;
+
+    void setDuration(Duration data){
+        inDuration.add(data);
+    }
+
+    void setPosition(Duration data){
+        inPosition.add(data);
+    }
 
 
 
