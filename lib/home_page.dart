@@ -14,27 +14,27 @@ import 'package:spotjams/sliding_cards.dart';
 import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
 
+import 'package:spotjams/controls/CentralControl.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:spotjams/entities/Music.dart';
-const kUrl0 = 'https://luan.xyz/files/audio/ambient_c_motion.mp3';
-const kUrl1 = 'http://tegos.kz/new/mp3_full/Luis_Fonsi_feat._Daddy_Yankee_-_Despacito.mp3';
+
 
 enum PlayerState { stopped, playing, paused }
 
 
 //Section audioPlayer
 final AudioPlayer audioPlayer = AudioPlayer();
-AudioPlayerState _audioPlayerState;
-StreamSubscription _durationSubscription;
-StreamSubscription _positionSubscription;
-StreamSubscription _playerCompleteSubscription;
-Duration duration;
-Duration position;
+//AudioPlayerState _audioPlayerState;
+//StreamSubscription _durationSubscription;
+//StreamSubscription _positionSubscription;
+//StreamSubscription _playerCompleteSubscription;
+//Duration duration;
+//Duration position;
 
 final PlayerControl playerControl = BlocProvider.getBloc<PlayerControl>();
 const int teste = 1;
-
+CentralControl control;
 
 class HomePage extends StatefulWidget {
   @override
@@ -51,28 +51,10 @@ class _HomePage extends State<HomePage> {
 
 
     _HomePage(){
-        Music music = new Music();
-//        audioPlayer.stop();
-
+        control = new CentralControl();
         List<Music> playlist;
         playlist = new List<Music>();
-        music.artist = "Desconhecido";
-        music.nameMusic = "Eletro dodo";
-        music.urlAudio = "https://api.soundcloud.com/tracks/260578593/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-        music.urlAlbum = "https://assets.audiomack.com/urbex12/f017a65c74ce89987f5477bab606d9fb.jpeg?width=750&height=750&max=true";
-        playlist.add(music);
 
-        Music music2 = new Music();
-        music2.artist = "Desconhecido";
-        music2.nameMusic = "Chata";
-        music2.urlAudio = "https://api.soundcloud.com/tracks/295692063/stream?secret_token=s-tj3IS&client_id=LBCcHmRB8XSStWL6wKH2HPACspQlXg2P";
-        music2.urlAlbum = "https://scontent-ams3-1.cdninstagram.com/vp/0793e118389fa95928869b8ed6662efa/5D41F37A/t51.2885-15/e35/26155550_172117836734423_2160437892134993920_n.jpg?_nc_ht=scontent-ams3-1.cdninstagram.com&se=8&ig_cache_key=MTY4NjU5NTQ4NzczMTYyNjU0OQ%3D%3D.2";
-        playlist.add(music2);
-
-        playerControl.setPlaylist(playlist);
-        playerControl.setMusic(playlist[0]);
-        playerControl.setIndex(0);
-        playerControl.setStatus(PlayerState.stopped);
     }
 
     @override
@@ -87,43 +69,33 @@ class _HomePage extends State<HomePage> {
     @override
   Widget build(BuildContext context) {
 //        final PlayerControl _playerControl = BlocProvider.getBloc<PlayerControl>();
-    return Material(
-            child: Stack(
-                children: <Widget>[
-                    Column(
-                        children: <Widget>[
-                            Container(
-                                color: Colors.transparent,
-                                height: MediaQuery.of(context).size.height * 0.1,
-                                width: MediaQuery.of(context).size.width,
-                                child: SafeArea(
-                                    child: Header(),
+        CentralControl control = new CentralControl();
+        return Material(
+                child: Stack(
+                    children: <Widget>[
+                        Column(
+                            children: <Widget>[
+                                Container(
+                                    color: Colors.transparent,
+                                    height: MediaQuery.of(context).size.height * 0.1,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: SafeArea(
+                                        child: Header(),
+                                    ),
                                 ),
-                            ),
-                            Container(
-                                color: Colors.green,
-                                height: MediaQuery.of(context).size.height * 0.9,
-                                width: MediaQuery.of(context).size.width,
-                                child: Tabs(
+                                Container(
+                                    color: Colors.green,
+                                    height: MediaQuery.of(context).size.height * 0.9,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Tabs(
+                                    ),
                                 ),
-                            ),
-                        ]
-                    ),
-                    MiniPlayer(),
-            ]
-        )
-    );
-
-
-//                    Header(),
-//                    Tabs(),
-//                  Positioned(
-//                      bottom: 0,
-//                      child:Padding(
-//                        padding: EdgeInsets.all(10.0),
-//                        child: MiniPlayer(),
-//                      ),
-//                  )
+                            ]
+                        ),
+                        MiniPlayer(),
+                ]
+            )
+        );
 
 
     }
@@ -131,9 +103,8 @@ class _HomePage extends State<HomePage> {
 
     void _initAudioPlayer() {
         print("Testao");
-        _durationSubscription = audioPlayer.onDurationChanged.listen((duration) => playerControl.setDuration(duration));
-        _positionSubscription =
-            audioPlayer.onAudioPositionChanged.listen((p) => playerControl.setPosition(p));
+        audioPlayer.onDurationChanged.listen((duration) => playerControl.setDuration(duration));
+        audioPlayer.onAudioPositionChanged.listen((p) => playerControl.setPosition(p));
 
         audioPlayer.onPlayerCompletion.listen((event) {
             onComplete();
@@ -165,11 +136,11 @@ class _HomePage extends State<HomePage> {
 
     @override
     void dispose() {
-        _durationSubscription?.cancel();
-        _positionSubscription?.cancel();
+//        _durationSubscription?.cancel();
+//        _positionSubscription?.cancel();
         audioPlayer.stop();
         audioPlayer.dispose();
-        _playerCompleteSubscription?.cancel();
+//        _playerCompleteSubscription?.cancel();
         super.dispose();
     }
 
@@ -181,62 +152,67 @@ class MiniPlayer extends StatelessWidget{
   @override
   Widget build(BuildContext context){
 //    final playerInfo = Provider.of<PlayerInfo>(context);
-    return Container(
-        alignment: Alignment.topCenter,
-        padding: new EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.89,
-            right: 20.0,
-            left: 20.0),
-            child: new Container(
-                  height: MediaQuery.of(context).size.width * 0.2,
-                  width: MediaQuery.of(context).size.width * 0.98,
-                  child: new Card(
-                      color: Colors.white,
-                      elevation: 4.0,
-                      child: Row(
-                          children: <Widget>[
-                              Container(
-                                  child: GestureDetector(
-                                      onTap: () {
-                                          Navigator.push(
-                                          context, new MaterialPageRoute(
-                                          builder: (context) => PlayerFull()));
-                                      },
-                                      child: StreamBuilder(
-                                          stream: playerControl.outMusic,
-                                              builder: (BuildContext context, AsyncSnapshot snapshot){
-                                                  return Row(
-                                                         children: <Widget>[
-                                                             Container(
-                                                                  height: 50.0,
-                                                                  child: Image.network(
-                                                                      snapshot.data.urlAlbum,
-                                                                  ),
-                                                              ),
-                                                             Container(
-                                                               child: Text(snapshot.data.nameMusic),
-                                                             ),
-                                                         ]
-                                                  );
+    return  StreamBuilder(
+            stream: playerControl.outMusic,
+            builder: (BuildContext context, AsyncSnapshot snap){
+                return Stack(
+                    children: <Widget>[
+                    if (snap.data != null)
+                            new Container(
+                            alignment: Alignment.topCenter,
+                            padding: new EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * 0.89,
+                                right: 20.0,
+                                left: 20.0),
+                            child: new Container(
+                                height: MediaQuery.of(context).size.width * 0.2,
+                                width: MediaQuery.of(context).size.width * 0.98,
+                                child: new Card(
+                                    color: Colors.white,
+                                    elevation: 4.0,
+                                    child: Row(
+                                        children: <Widget>[
+                                            Container(
+                                                child: GestureDetector(
+                                                    onTap: () {
+                                                        Navigator.push(
+                                                            context, new MaterialPageRoute(
+                                                            builder: (context) => PlayerFull()));
+                                                    },
+                                                    child:  Row(
+                                                                children: <Widget>[
+                                                                    Container(
+                                                                        height: 50.0,
+                                                                        child: Image.network(
+                                                                            snap.data.urlAlbum,
+                                                                        ),
+                                                                    ),
+                                                                    Container(
+                                                                        child: Text(snap.data.nameMusic),
+                                                                    ),
+                                                                ]
+                                                            )
+                                                )
+                                            ),
+                                            StreamBuilder(
+                                                stream: playerControl.outStatus,
+                                                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                                    return IconButton(
+                                                        icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
+                                                        onPressed: () => play(),
+                                                    );
+                                                },
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                        )
+                        )
+                    ]
+                );
+            }
+            );
 
-                                            }
-                                       ),
-                                  )
-                              ),
-                              StreamBuilder(
-                                stream: playerControl.outStatus,
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                      return IconButton(
-                                        icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
-                                        onPressed: () => play(),
-                                      );
-                                  },
-                              ),
-                          ],
-                      ),
-                  ),
-          )
-    );
 
 //                alignment: Alignment.bottomCenter,
 //                color: Colors.blueGrey,
