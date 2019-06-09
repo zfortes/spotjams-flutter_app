@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:spotjams/ListTabs.dart';
 import 'package:flutter/painting.dart';
 import 'package:spotjams/blocs/playerControl.dart';
 //import 'package:provider/provider.dart';
@@ -87,36 +87,44 @@ class _HomePage extends State<HomePage> {
     @override
   Widget build(BuildContext context) {
 //        final PlayerControl _playerControl = BlocProvider.getBloc<PlayerControl>();
-    return Container(
-        child: Scaffold(
-              backgroundColor: Colors.white,
-              body: Stack(
-                children: <Widget> [
-                  SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SizedBox(height: 8),
-                        Header(),
-                        SizedBox(height: 40),
-                        Tabs(),
-                        SizedBox(height: 8),
-                        SlidingCardsView(),
+    return Material(
+            child: Stack(
+                children: <Widget>[
+                    Column(
+                        children: <Widget>[
+                            Container(
+                                color: Colors.transparent,
+                                height: MediaQuery.of(context).size.height * 0.1,
+                                width: MediaQuery.of(context).size.width,
+                                child: SafeArea(
+                                    child: Header(),
+                                ),
+                            ),
+                            Container(
+                                color: Colors.green,
+                                height: MediaQuery.of(context).size.height * 0.9,
+                                width: MediaQuery.of(context).size.width,
+                                child: Tabs(
+                                ),
+                            ),
+                        ]
+                    ),
+                    MiniPlayer(),
+            ]
+        )
+    );
 
-                      ],
-                    )
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      child:Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: MiniPlayer(),
-                      ),
-                  )
-                ],
-              )
-            )
-            );
+
+//                    Header(),
+//                    Tabs(),
+//                  Positioned(
+//                      bottom: 0,
+//                      child:Padding(
+//                        padding: EdgeInsets.all(10.0),
+//                        child: MiniPlayer(),
+//                      ),
+//                  )
+
 
     }
 
@@ -174,51 +182,109 @@ class MiniPlayer extends StatelessWidget{
   Widget build(BuildContext context){
 //    final playerInfo = Provider.of<PlayerInfo>(context);
     return Container(
-                color: Colors.blueGrey,
-                width: MediaQuery.of(context).size.width / 1.080,
-                child: Row(
-                  children: <Widget>[
-                      Container(
-                          child: GestureDetector(
-                              onTap: () {
-                                  Navigator.push(
-                                  context, new MaterialPageRoute(
-                                  builder: (context) => PlayerFull()));
-                              },
-                              child: StreamBuilder(
-                                  stream: playerControl.outMusic,
-                                      builder: (BuildContext context, AsyncSnapshot snapshot){
-                                          return Row(
-                                                 children: <Widget>[
-                                                     Container(
-                                                          height: 50.0,
-                                                          child: Image.network(
-                                                              snapshot.data.urlAlbum,
-                                                          ),
-                                                      ),
-                                                     Container(
-                                                       child: Text(snapshot.data.nameMusic),
-                                                     ),
-                                                 ]
-                                          );
+        alignment: Alignment.topCenter,
+        padding: new EdgeInsets.only(
+            top: MediaQuery.of(context).size.height * 0.89,
+            right: 20.0,
+            left: 20.0),
+            child: new Container(
+                  height: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.98,
+                  child: new Card(
+                      color: Colors.white,
+                      elevation: 4.0,
+                      child: Row(
+                          children: <Widget>[
+                              Container(
+                                  child: GestureDetector(
+                                      onTap: () {
+                                          Navigator.push(
+                                          context, new MaterialPageRoute(
+                                          builder: (context) => PlayerFull()));
+                                      },
+                                      child: StreamBuilder(
+                                          stream: playerControl.outMusic,
+                                              builder: (BuildContext context, AsyncSnapshot snapshot){
+                                                  return Row(
+                                                         children: <Widget>[
+                                                             Container(
+                                                                  height: 50.0,
+                                                                  child: Image.network(
+                                                                      snapshot.data.urlAlbum,
+                                                                  ),
+                                                              ),
+                                                             Container(
+                                                               child: Text(snapshot.data.nameMusic),
+                                                             ),
+                                                         ]
+                                                  );
 
-                                    }
-                               ),
-                          )
+                                            }
+                                       ),
+                                  )
+                              ),
+                              StreamBuilder(
+                                stream: playerControl.outStatus,
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                      return IconButton(
+                                        icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
+                                        onPressed: () => play(),
+                                      );
+                                  },
+                              ),
+                          ],
                       ),
-                      StreamBuilder(
-                        stream: playerControl.outStatus,
-                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                              return IconButton(
-                                icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
-                                onPressed: () => play(),
-                              );
-                          },
-                      ),
-                  ],
+                  ),
+          )
+    );
 
-              )
-        );
+//                alignment: Alignment.bottomCenter,
+//                color: Colors.blueGrey,
+//                height: MediaQuery.of(context).size.height *0.05,
+//                width: MediaQuery.of(context).size.width * 0.8,
+//                child: Row(
+//                  children: <Widget>[
+//                      Container(
+//                          child: GestureDetector(
+//                              onTap: () {
+//                                  Navigator.push(
+//                                  context, new MaterialPageRoute(
+//                                  builder: (context) => PlayerFull()));
+//                              },
+//                              child: StreamBuilder(
+//                                  stream: playerControl.outMusic,
+//                                      builder: (BuildContext context, AsyncSnapshot snapshot){
+//                                          return Row(
+//                                                 children: <Widget>[
+//                                                     Container(
+//                                                          height: 50.0,
+//                                                          child: Image.network(
+//                                                              snapshot.data.urlAlbum,
+//                                                          ),
+//                                                      ),
+//                                                     Container(
+//                                                       child: Text(snapshot.data.nameMusic),
+//                                                     ),
+//                                                 ]
+//                                          );
+//
+//                                    }
+//                               ),
+//                          )
+//                      ),
+//                      StreamBuilder(
+//                        stream: playerControl.outStatus,
+//                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+//                              return IconButton(
+//                                icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
+//                                onPressed: () => play(),
+//                              );
+//                          },
+//                      ),
+//                  ],
+//
+//              )
+//        );
     }
 
 
@@ -254,13 +320,21 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Text(
-        'Shenzhen',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-        ),
+      padding: const EdgeInsets.fromLTRB(20.0, 5.0, 10.0, 20.0),
+      child: Row(
+        children: <Widget>[
+            Text(
+                'SpotJAMS',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
+            ),
+            Spacer(),
+            IconButton(
+                icon: Icon(Icons.settings),
+            )
+          ]
       ),
     );
   }

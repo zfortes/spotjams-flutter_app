@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         blocs: [Bloc((i) => PlayerControl())],
         child: MaterialApp(
           theme: ThemeData(fontFamily: 'SF Pro Display'),
-          title: 'Buy Tickets',
+          title: "SpotJAMS",
           home: HomePage()
         )
     );
