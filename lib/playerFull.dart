@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 
 
 import 'home_page.dart';
-
+var screenWidth;
+var screeHeight;
 
 
 
@@ -45,7 +46,7 @@ class _PlayerFull extends State<PlayerFull>
     @override
     void initState() {
       super.initState();
-
+//      screenInfo();
     }
 
 
@@ -64,7 +65,7 @@ class _PlayerFull extends State<PlayerFull>
                                     ProgressBar(),
                                     Container(
                                         child: Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+                                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.01, horizontal: MediaQuery.of(context).size.height * 0.02),
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
@@ -105,7 +106,9 @@ class _PlayerFull extends State<PlayerFull>
 
 
     Future<int> play() async{
-      print("Play");
+      print("Play ----------------");
+      print(screeHeight);
+      print(screenWidth);
       int result;
       if (playerControl.getStatus == PlayerState.paused) {
           result = await audioPlayer.resume();

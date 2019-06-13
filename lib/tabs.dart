@@ -49,54 +49,7 @@ class Tabs extends StatelessWidget {
           ],
         ),
       ),
-
-
-//      length: 3,
-//      child: Column (
-//        children: <Widget> [
-//          TabBar(isScrollable: true, tabs: [
-//            new Tab(text: 'Tab 1', icon: new Icon(Icons.directions_car)),
-//            new Tab(text: 'Tab 2', icon: new Icon(Icons.directions_walk)),
-//            new Tab(text: 'Tab 3', icon: new Icon(Icons.directions_bike)),
-//          ]),
-//
-//
-//        TabBarView(
-//          children: [
-//            new ListView(
-//              children: <Widget>[
-//                Text("Tab 1"),
-//              ],
-//            ),
-//            new ListView(
-//                children: <Widget>[
-//                    Text("Tesxto")
-//                 ],
-//            ),
-//            new ListView(
-//              children: <Widget>[
-//                Text("Tesxto")
-//              ],
-//            ),
-//          ],
-//        ),
-//        ]
-//      ),
     );
-
-
-
-
-//    Row(
-//      crossAxisAlignment: CrossAxisAlignment.end,
-//      children: <Widget>[
-//        SizedBox(width: 24),
-//        PlaylistTab(text: 'Playlists', isSelected: false),
-//        ArtistTab(text: 'Artists', isSelected: true),
-//        AlbumsTab(text: 'Albums', isSelected: false),
-//        SearchTab(text: 'Search', isSelected: false),
-//      ],
-//    );
   }
 
 

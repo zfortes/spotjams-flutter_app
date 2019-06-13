@@ -3,14 +3,14 @@ import 'package:spotjams/ListTabs.dart';
 import 'package:flutter/painting.dart';
 import 'package:spotjams/blocs/playerControl.dart';
 //import 'package:provider/provider.dart';
-import 'package:spotjams/exhibition_bottom_sheet.dart';
+//import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
 import 'dart:io';
 //import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
-import 'package:spotjams/playerWidget.dart';
 //import 'package:spotjams/playerWidget.dart';
-import 'package:spotjams/sliding_cards.dart';
+//import 'package:spotjams/playerWidget.dart';
+//import 'package:spotjams/sliding_cards.dart';
 import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
 
@@ -212,73 +212,24 @@ class MiniPlayer extends StatelessWidget{
                 );
             }
             );
-
-
-//                alignment: Alignment.bottomCenter,
-//                color: Colors.blueGrey,
-//                height: MediaQuery.of(context).size.height *0.05,
-//                width: MediaQuery.of(context).size.width * 0.8,
-//                child: Row(
-//                  children: <Widget>[
-//                      Container(
-//                          child: GestureDetector(
-//                              onTap: () {
-//                                  Navigator.push(
-//                                  context, new MaterialPageRoute(
-//                                  builder: (context) => PlayerFull()));
-//                              },
-//                              child: StreamBuilder(
-//                                  stream: playerControl.outMusic,
-//                                      builder: (BuildContext context, AsyncSnapshot snapshot){
-//                                          return Row(
-//                                                 children: <Widget>[
-//                                                     Container(
-//                                                          height: 50.0,
-//                                                          child: Image.network(
-//                                                              snapshot.data.urlAlbum,
-//                                                          ),
-//                                                      ),
-//                                                     Container(
-//                                                       child: Text(snapshot.data.nameMusic),
-//                                                     ),
-//                                                 ]
-//                                          );
-//
-//                                    }
-//                               ),
-//                          )
-//                      ),
-//                      StreamBuilder(
-//                        stream: playerControl.outStatus,
-//                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-//                              return IconButton(
-//                                icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
-//                                onPressed: () => play(),
-//                              );
-//                          },
-//                      ),
-//                  ],
-//
-//              )
-//        );
     }
 
 
 
-  void play() async{
-
+  Future<int> play() async{
+      int r;
 
 
       if (playerControl.getStatus == PlayerState.paused) {
-          await audioPlayer.resume();
+          r = await audioPlayer.resume();
           playerControl.setStatus(PlayerState.playing);
 
       } else if (playerControl.getStatus == PlayerState.playing){
-          await audioPlayer.pause();
+          r = await audioPlayer.pause();
           playerControl.setStatus(PlayerState.paused);
       }
       else {
-          await audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
+          r =  await audioPlayer.play(playerControl.getPlaylist[playerControl.getIndex].urlAudio);
           playerControl.setStatus(PlayerState.playing);
           audioPlayer.onDurationChanged.listen((duration) => playerControl.setDuration(duration));
       }
@@ -287,6 +238,7 @@ class MiniPlayer extends StatelessWidget{
       print(playerControl.getPosition);
       print("Duraiton");
       print(playerControl.getDuration);
+      return r;
   }
 
 }
