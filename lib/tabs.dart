@@ -154,7 +154,7 @@ class PlaylistPage extends StatelessWidget {
                                       ),
                                       IconButton(
                                           icon: (Icon(Icons.remove_circle_outline)),
-                                          onPressed: () => {print("apertou")}, //TODO implementar a funcao de remover da playlist
+                                          onPressed: () => control.removeMousicFromPLaylist(index, indexMusic), //TODO implementar a funcao de remover da playlist
                                       )
                                   ],
                               );

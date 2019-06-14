@@ -72,7 +72,7 @@ class _PlayerFull extends State<PlayerFull>
                                                     IconButton(
                                                         icon: Icon(Icons.skip_previous),
                                                         color: Colors.black,
-                                                        iconSize: 48,
+                                                        iconSize: MediaQuery.of(context).size.width * 0.15,
                                                         onPressed: previous,
                                                     ),
                                                     StreamBuilder(
@@ -80,7 +80,7 @@ class _PlayerFull extends State<PlayerFull>
                                                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                                                         return IconButton(
                                                           icon: ((snapshot.data == PlayerState.playing) ? Icon(Icons.pause_circle_filled) : Icon(Icons.play_circle_filled)),
-                                                          iconSize: 65,
+                                                          iconSize: MediaQuery.of(context).size.width * 0.2,
                                                           onPressed: () => play(),
                                                         );
                                                       },
@@ -88,7 +88,7 @@ class _PlayerFull extends State<PlayerFull>
                                                     IconButton(
                                                         icon: Icon(Icons.skip_next),
                                                         color: Colors.black,
-                                                        iconSize: 48,
+                                                        iconSize: MediaQuery.of(context).size.width * 0.15,
                                                         onPressed: next,
                                                     ),
                                                 ]
@@ -190,8 +190,8 @@ class CardAlbum extends StatelessWidget{
                         borderRadius: new BorderRadius.circular(8.0),
                         child: Image.network(
                             snapshot.data.urlAlbum,
-                            height: 320.0,
-                            width: 320.0,
+                            height: MediaQuery.of(context).size.width * 0.85,
+                            width: MediaQuery.of(context).size.width * 0.85,
                         ),
                     ),
                 );
@@ -221,13 +221,13 @@ class HeaderMusic extends StatelessWidget{
                             children: <Widget>[
                                 Text(snapshot.data.nameMusic,
                                   style: TextStyle(
-                                    fontSize: 22,
+                                    fontSize: MediaQuery.of(context).size.width * 0.065,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(snapshot.data.artist,
                                   style: TextStyle(
-                                    fontSize: 15,
+                                    fontSize: MediaQuery.of(context).size.width * 0.05,
                                     fontWeight: FontWeight.w300,
                                   ),
                                 )

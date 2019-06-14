@@ -85,7 +85,9 @@ class Stub {
         setPlaylists();
     }
 
+    void removeMusicFromPlaylist(){
 
+    }
 
 
     List<Playlist> getPlaylistsUser(){
