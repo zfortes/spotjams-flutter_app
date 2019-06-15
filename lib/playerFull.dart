@@ -184,14 +184,14 @@ class CardAlbum extends StatelessWidget{
             stream: playerControl.outMusic,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
                 return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
+                    margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 25.0),
                     color: Colors.white,
                     child: ClipRRect(
                         borderRadius: new BorderRadius.circular(8.0),
                         child: Image.network(
                             snapshot.data.urlAlbum,
-                            height: MediaQuery.of(context).size.width * 0.85,
-                            width: MediaQuery.of(context).size.width * 0.85,
+                            height: MediaQuery.of(context).size.width * 0.75,
+                            width: MediaQuery.of(context).size.width * 0.75,
                         ),
                     ),
                 );
@@ -214,7 +214,7 @@ class HeaderMusic extends StatelessWidget{
         builder: (BuildContext context, AsyncSnapshot snapshot){
             return Container(
                 child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 22.0),
+                    padding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 22.0),
                     child: Align(
                         alignment: Alignment.topLeft,
                         child: Column(
