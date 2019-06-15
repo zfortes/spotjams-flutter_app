@@ -70,7 +70,18 @@ class Stub {
     void setPlaylists(){
         playlists = new List<Playlist>();
         Playlist p = new Playlist();
-        p.musicas = musicas;
+        Music m;
+        p.musicas = new List<Music>();
+        musicas.forEach((music) => {
+            m = new Music(),
+            m.id = music.id,
+            m.urlAlbum = music.urlAlbum,
+            m.artist = music.artist,
+            m.urlAudio = music.urlAudio,
+            m.nameMusic = music.nameMusic,
+            p.musicas.add(m)
+        });
+//        p.musicas = musicas;
         p.nome = "Eletronicas";
         p.id_usuario = 25;
         p.num_seguidores = 30;
@@ -85,8 +96,13 @@ class Stub {
         setPlaylists();
     }
 
-    void removeMusicFromPlaylist(){
+    void removeMusicFromPlaylist(int pn, int m){
 
+        int encontrou = 0;
+        print(pn);
+        print(m);
+        playlists[pn].musicas.removeAt(m);
+        print("Saiu");
     }
 
 

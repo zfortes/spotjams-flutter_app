@@ -18,8 +18,8 @@ class CentralControl{
         this.musicas = stub.getMusicasUser();
     }
 
-    void removeMusicFromPlaylist(int indexPlaylist, int indexMusic){
-       stub.removeMusicFromPlaylist(playlists[indexPlaylist].idPlaylist, playlists[indexPlaylist].musicas[indexMusic);
+    void removeMusicFromPLaylist(int indexPlaylist, int indexMusic){
+       stub.removeMusicFromPlaylist(indexPlaylist, indexMusic);
     }
 
 

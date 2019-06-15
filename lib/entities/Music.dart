@@ -1,4 +1,5 @@
 class Music {
+    int id;
     String nameMusic;
     String nameArtist;
     String urlAlbum;

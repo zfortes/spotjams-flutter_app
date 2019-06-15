@@ -62,10 +62,25 @@ class Tabs extends StatelessWidget {
   }
 }
 
-class PlaylistTab extends StatelessWidget {
+
+
+
+class PlaylistTab extends StatefulWidget {
 
   const PlaylistTab({Key key})
       : super(key: key);
+
+  @override
+  _PlaylistTab createState() => new _PlaylistTab();
+}
+
+class _PlaylistTab extends State<PlaylistTab>{
+
+  @override
+  void initState() {
+    super.initState();
+//      screenInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,13 +109,30 @@ class PlaylistTab extends StatelessWidget {
 }
 
 
-class PlaylistPage extends StatelessWidget {
+class PlaylistPage extends StatefulWidget {
+
   final index;
   const PlaylistPage({Key key, @required this.index})
       : super(key: key);
 
   @override
+  _PlaylistPage createState() => new _PlaylistPage();
+
+
+}
+
+class _PlaylistPage extends State<PlaylistPage>{
+//  final index;
+  @override
   Widget build(BuildContext context) {
+
+    @override
+    void initState() {
+      super.initState();
+//      screenInfo();
+    }
+
+
     return Material(
         color: Colors.black,
 //      color: Colors.green,
@@ -112,14 +144,14 @@ class PlaylistPage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height *0.10,
                         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-                        child: Text(control.getPlaylistUser()[index].nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.08, color: Colors.black87  )),
+                        child: Text(control.getPlaylistUser()[widget.index].nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.08, color: Colors.black87  )),
                     ),
                     Container(
                         color: Colors.white,
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height *0.85,
                         child: ListView.builder(
-                            itemCount: control.getPlaylistUser()[index].musicas.length,
+                            itemCount: control.getPlaylistUser()[widget.index].musicas.length,
                             itemBuilder: (context, indexMusic) {
                               return Row(
                                   children: <Widget>[
@@ -128,7 +160,7 @@ class PlaylistPage extends StatelessWidget {
 //                                          color: Colors.green,
                                           child: GestureDetector(
                                               onTap: () {
-                                                  play(index, indexMusic); //inicia a musica
+                                                  play(widget.index, indexMusic); //inicia a musica
                                                   Navigator.push( //entra no player
                                                       context, new MaterialPageRoute(
                                                       builder: (context) => PlayerFull()));
@@ -141,12 +173,12 @@ class PlaylistPage extends StatelessWidget {
                                                             margin: EdgeInsets.all(10),
                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                             height: MediaQuery.of(context).size.height *0.06,
-                                                            child: Image.network(control.getPlaylistUser()[index].musicas[indexMusic].urlAlbum),
+                                                            child: Image.network(control.getPlaylistUser()[widget.index].musicas[indexMusic].urlAlbum),
                                                       ),
                                                       Container(
                                                           width: MediaQuery.of(context).size.width * 0.65,
 //                                                          height: MediaQuery.of(context).size.height *0.06,
-                                                          child: Text(control.getPlaylistUser()[index].musicas[indexMusic].nameMusic, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.04, color: Colors.black87 )),
+                                                          child: Text(control.getPlaylistUser()[widget.index].musicas[indexMusic].nameMusic, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.04, color: Colors.black87 )),
                                                       ),
                                                   ]
                                               )
@@ -154,7 +186,7 @@ class PlaylistPage extends StatelessWidget {
                                       ),
                                       IconButton(
                                           icon: (Icon(Icons.remove_circle_outline)),
-                                          onPressed: () => control.removeMousicFromPLaylist(index, indexMusic), //TODO implementar a funcao de remover da playlist
+                                          onPressed: () => removeFromPlaylist(widget.index, indexMusic), //TODO implementar a funcao de remover da playlist
                                       )
                                   ],
                               );
@@ -178,6 +210,14 @@ class PlaylistPage extends StatelessWidget {
     );
   }
 
+  void removeFromPlaylist(int indexPlaylist, int indexMusic){
+    print("Entrou------------");
+    setState(() {
+      control.removeMusicFromPLaylist(indexPlaylist, indexMusic);
+    });
+
+  }
+
 
   void play(int index, int musicIndex){
     playerControl.setPlaylist(control.getPlaylistUser()[index].musicas);
@@ -189,6 +229,10 @@ class PlaylistPage extends StatelessWidget {
   }
 
 //  PlaylistPage(int index){
+//    this.index = index;
+//  }
+
+//  _PlaylistPage(int index){
 //    this.index = index;
 //  }
 }
