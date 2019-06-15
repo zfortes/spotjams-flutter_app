@@ -110,6 +110,11 @@ class Stub {
         return playlists;
     }
 
+    List<Music> getMusics(){
+        return musicas;
+    }
+
+
     List<Music> getMusicasUser(){
         return musicas;
     }

@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:spotjams/home_page.dart';
 import 'package:spotjams/playerFull.dart';
 
+import 'entities/Music.dart';
+
 class Tabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class Tabs extends StatelessWidget {
             child: new TabBar(
               labelColor: Colors.black,
               tabs: [
-                Tab(text: "Musicas",),
+                Tab(text: "Music",),
                 Tab(text: "Playlists",),
 //                Tab(text: "Artists",),
                 Tab(text: "Search",),
@@ -26,23 +28,7 @@ class Tabs extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            ListView.builder(
-                  itemCount: control.getMusicasUser().length,
-                  itemBuilder: (context, index) {
-                      return ListTile(
-                            onTap: () => play(index),
-                            leading: Container(height: 50.0, width: 50.0,child: Image.network(control.getMusicasUser()[index].urlAlbum)),
-                            title:Text(control.getMusicasUser()[index].nameMusic, ),
-
-                      );
-                  }
-//                      Card(
-//                          child: Padding(
-//                              padding: const EdgeInsets.all(16.0),
-//                              child: Text(position.toString(), style: TextStyle(fontSize: 22.0),),
-//                              ),
-//                      );},
-            ),
+            MusicTab(musics: control.getMusics()),
             PlaylistTab(),
             Icon(Icons.directions_bike),
 //            Icon(Icons.directions_bike),
@@ -53,6 +39,121 @@ class Tabs extends StatelessWidget {
   }
 
 
+
+}
+
+class MusicTab extends StatefulWidget {
+    final List<Music> musics;
+    const MusicTab({Key key, @required this.musics})
+        : super(key: key);
+  @override
+  _MusicTabState createState() => _MusicTabState();
+}
+
+class _MusicTabState extends State<MusicTab> {
+    @override
+    void initState() {
+        super.initState();
+        getMusics();
+    }
+
+    void getMusics(){
+        setState(() {
+//            widget.musics = control.getMusics();
+        });
+
+    }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height *0.85,
+            child: ListView.builder(
+                itemCount: widget.musics.length,
+                itemBuilder: (context, indexMusic) {
+                    return Row(
+                        children: <Widget>[
+                            Container(
+                                //                                          color: Colors.green,
+                                child: GestureDetector(
+                                    onTap: () {
+                                        play(indexMusic); //inicia a musica
+//                                        Navigator.push( //entra no player
+//                                            context, new MaterialPageRoute(
+//                                            builder: (context) =>
+//                                                PlayerFull()));
+                                    },
+                                    child: Row(
+                                        children: <Widget>[
+
+                                            Container(
+                                                //                                                          padding: EdgeInsets.all(20),
+                                                margin: EdgeInsets.all(10),
+                                                width: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width * 0.15,
+                                                height: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .height * 0.06,
+                                                child: Image.network(widget
+                                                    .musics[indexMusic]
+                                                    .urlAlbum),
+                                            ),
+                                            Container(
+                                                width: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width * 0.65,
+                                                //                                                          height: MediaQuery.of(context).size.height *0.06,
+                                                child: Text(widget.
+                                                    musics[indexMusic]
+                                                    .nameMusic,
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        fontSize: MediaQuery
+                                                            .of(context)
+                                                            .size
+                                                            .width * 0.04,
+                                                        color: Colors
+                                                            .black87)),
+                                            ),
+                                        ]
+                                    )
+                                )
+                            ),
+                            IconButton(
+                                icon: (Icon(Icons.add_circle_outline)),
+                                onPressed: () => {print("Teste")}, //TODO implementar a funcao de remover da playlist
+                            )
+                        ]);
+                })
+//
+//
+//
+//
+//    ListView.builder(
+//        itemCount: control.getMusicasUser().length,
+//        itemBuilder: (context, index) {
+//            return ListTile(
+//                onTap: () => play(index),
+//                leading: Container(height: 50.0, width: 50.0,child: Image.network(control.getMusicasUser()[index].urlAlbum)),
+//                title:Text(control.getMusicasUser()[index].nameMusic, ),
+//
+//            );
+//        }
+//                      Card(
+//                          child: Padding(
+//                              padding: const EdgeInsets.all(16.0),
+//                              child: Text(position.toString(), style: TextStyle(fontSize: 22.0),),
+//                              ),
+                      );
+
+  }
+
   void play(int index){
       playerControl.setPlaylist(control.getMusicasUser());
       playerControl.setMusic(control.getMusicasUser()[index]);
@@ -61,7 +162,6 @@ class Tabs extends StatelessWidget {
       playerControl.setStatus(PlayerState.playing);
   }
 }
-
 
 
 

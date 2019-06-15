@@ -31,6 +31,10 @@ class CentralControl{
         return stub.getPlaylistsUser();
     }
 
+    List<Music> getMusics(){
+        return stub.getMusics();
+    }
+
     CentralControl(){
          setMusicasStub();
     }
