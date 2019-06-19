@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:spotjams/home_page.dart';
+import 'package:spotjams/pages/add_to_playlist/AddToPlaylist.dart';
 import 'package:spotjams/playerFull.dart';
 
 import 'entities/Music.dart';
@@ -127,7 +128,7 @@ class _MusicTabState extends State<MusicTab> {
                             ),
                             IconButton(
                                 icon: (Icon(Icons.add_circle_outline)),
-                                onPressed: () => {print("Teste")}, //TODO implementar a funcao de remover da playlist
+                                onPressed: () => {Navigator.push(context, new MaterialPageRoute(builder: (context) => AddToPlaylist()))}, //TODO implementar a funcao de remover da playlist
                             )
                         ]);
                 })
