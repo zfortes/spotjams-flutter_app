@@ -7,29 +7,43 @@ class AddToPlaylist extends StatelessWidget {
     List<Playlist> puser;
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.white,
-        child: SafeArea(
-            child: Container(
-                color: Colors.white,
-                child: Padding(
-                    padding: EdgeInsets.fromLTRB(5.0, 2.0, 0.0, 0.0),
-                    child:Column(
-                        children: <Widget>[
-                            ListView.builder(
-                                itemBuilder: (context, indexP){
-                                    return ListTile(
-        //                                onTap: ,
-                                        title: Text(puser[indexP].nome),
-                                    );
-                                }
-                            )
-                        ],
-                    )
-                ),
-            )
+    return  MaterialApp(
+            title: "Playlists",
+            home: Scaffold(
+                appBar: AppBar(title: Text("Playlist", style: TextStyle(
+                    fontWeight: FontWeight
+                        .bold,
+                    fontSize: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.04,
+                    color: Colors
+                        .black87),), backgroundColor: Colors.white,),
+                body: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    color: Colors.white,
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(5.0, 2.0, 0.0, 0.0),
+                        child:
+    //                            Container(
+                                     ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        shrinkWrap: true,
+                                        itemCount: puser.length,
+                                        itemBuilder: (context, indexP){
+                                            return  Text(control.getPlaylistUser()[indexP].nome);
+
+                                        }
+                                    )
+    //                            )
+
+
+                    ),
+                )
         )
     );
+//    );
 
 
 
