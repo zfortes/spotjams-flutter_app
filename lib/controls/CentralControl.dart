@@ -4,10 +4,13 @@ import 'dart:core';
 import 'package:spotjams/entities/Music.dart';
 import 'package:spotjams/entities/Music.dart' as prefix1;
 import 'package:spotjams/entities/Playlist.dart';
-
+import 'package:spotjams/repository/Repository.dart';
 import 'Stub.dart';
 
 class CentralControl{
+
+
+    Repository repo = new Repository();
     Stub stub = new Stub();
     List<Music> musicas;
     List<Playlist> playlists;
@@ -32,6 +35,7 @@ class CentralControl{
     }
 
     List<Music> getMusics(){
+         repo.getMusics();
         return stub.getMusics();
     }
 

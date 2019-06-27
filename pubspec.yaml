@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http:
+  http: ^0.12.0+2
   #path_provider:
   audioplayers: ^0.12.1
   provider: ^2.0.0
