@@ -34,9 +34,9 @@ class CentralControl{
         return stub.getPlaylistsUser();
     }
 
-    List<Music> getMusics(){
-         repo.getMusics();
-        return stub.getMusics();
+    Future<List<Music>> getMusics() async {
+         return await repo.getMusics();
+//        return stub.getMusics();
     }
 
     CentralControl(){

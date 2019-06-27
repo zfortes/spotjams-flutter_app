@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:spotjams/pages/create_playlist/NewPlaylist.dart';
 import 'package:spotjams/home_page.dart';
 import 'package:spotjams/pages/add_to_playlist/AddToPlaylist.dart';
 import 'package:spotjams/playerFull.dart';
@@ -29,7 +32,7 @@ class Tabs extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            MusicTab(musics: control.getMusics()),
+            MusicTab(musics: new List<Music>()),
             PlaylistTab(),
             Icon(Icons.directions_bike),
 //            Icon(Icons.directions_bike),
@@ -67,91 +70,78 @@ class _MusicTabState extends State<MusicTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height *0.85,
-            child: ListView.builder(
-                itemCount: widget.musics.length,
-                itemBuilder: (context, indexMusic) {
-                    return Row(
-                        children: <Widget>[
-                            Container(
-                                //                                          color: Colors.green,
-                                child: GestureDetector(
-                                    onTap: () {
-                                        play(indexMusic); //inicia a musica
-//                                        Navigator.push( //entra no player
-//                                            context, new MaterialPageRoute(
-//                                            builder: (context) =>
-//                                                PlayerFull()));
-                                    },
-                                    child: Row(
-                                        children: <Widget>[
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height *0.85,
+        child: FutureBuilder(
+          future: control.getMusics(),
+          builder: (BuildContext context, AsyncSnapshot snapshot){
+            print("TAMANHO");
+            print(snapshot.data.length);
+            if (snapshot.hasData) {
+               return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, indexMusic) {
+                          return Row(
+                              children: <Widget>[
+                                  Container(
+                                      //                                          color: Colors.green,
+                                      child: GestureDetector(
+                                          onTap: () {
+                                              play(indexMusic); //inicia a musica
+      //                                        Navigator.push( //entra no player
+      //                                            context, new MaterialPageRoute(
+      //                                            builder: (context) =>
+      //                                                PlayerFull()));
+                                          },
+                                          child: Row(
+                                              children: <Widget>[
 
-                                            Container(
-                                                //                                                          padding: EdgeInsets.all(20),
-                                                margin: EdgeInsets.all(10),
-                                                width: MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .width * 0.15,
-                                                height: MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .height * 0.06,
-                                                child: Image.network(widget
-                                                    .musics[indexMusic]
-                                                    .urlAlbum),
-                                            ),
-                                            Container(
-                                                width: MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .width * 0.65,
-                                                //                                                          height: MediaQuery.of(context).size.height *0.06,
-                                                child: Text(widget.
-                                                    musics[indexMusic]
-                                                    .nameMusic,
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight
-                                                            .bold,
-                                                        fontSize: MediaQuery
-                                                            .of(context)
-                                                            .size
-                                                            .width * 0.04,
-                                                        color: Colors
-                                                            .black87)),
-                                            ),
-                                        ]
-                                    )
-                                )
-                            ),
-                            IconButton(
-                                icon: (Icon(Icons.add_circle_outline)),
-                                onPressed: () => {Navigator.push(context, new MaterialPageRoute(builder: (context) => AddToPlaylist()))}, //TODO implementar a funcao de remover da playlist
-                            )
-                        ]);
-                })
-//
-//
-//
-//
-//    ListView.builder(
-//        itemCount: control.getMusicasUser().length,
-//        itemBuilder: (context, index) {
-//            return ListTile(
-//                onTap: () => play(index),
-//                leading: Container(height: 50.0, width: 50.0,child: Image.network(control.getMusicasUser()[index].urlAlbum)),
-//                title:Text(control.getMusicasUser()[index].nameMusic, ),
-//
-//            );
-//        }
-//                      Card(
-//                          child: Padding(
-//                              padding: const EdgeInsets.all(16.0),
-//                              child: Text(position.toString(), style: TextStyle(fontSize: 22.0),),
-//                              ),
-                      );
+                                                  Container(
+                                                      //                                                          padding: EdgeInsets.all(20),
+                                                      margin: EdgeInsets.all(10),
+                                                      width: MediaQuery
+                                                          .of(context)
+                                                          .size
+                                                          .width * 0.15,
+                                                      height: MediaQuery
+                                                          .of(context)
+                                                          .size
+                                                          .height * 0.06,
+                                                      child: Image.network(snapshot.data[indexMusic]
+                                                          .urlAlbum),
+                                                  ),
+                                                  Container(
+                                                      width: MediaQuery
+                                                          .of(context)
+                                                          .size
+                                                          .width * 0.65,
+                                                      //                                                          height: MediaQuery.of(context).size.height *0.06,
+                                                      child: Text(snapshot.data[indexMusic]
+                                                          .nameMusic,
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight
+                                                                  .bold,
+                                                              fontSize: MediaQuery
+                                                                  .of(context)
+                                                                  .size
+                                                                  .width * 0.04,
+                                                              color: Colors
+                                                                  .black87)),
+                                                  ),
+                                              ]
+                                          )
+                                      )
+                                  ),
+                                  IconButton(
+                                      icon: (Icon(Icons.add_circle_outline)),
+                                      onPressed: () => {Navigator.push(context, new MaterialPageRoute(builder: (context) => AddToPlaylist()))}, //TODO implementar a funcao de remover da playlist
+                                  )
+                              ]);
+                      });
+               }})
+
+    );
 
   }
 
@@ -186,25 +176,36 @@ class _PlaylistTab extends State<PlaylistTab>{
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView.builder(
-          itemCount: control.getPlaylistUser().length,
-          itemBuilder: (context, index) {
-            return Container(
-                margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
-                child: GestureDetector(
-                    onTap: () {
-                        Navigator.push(
-                        context, new MaterialPageRoute(
-                        builder: (context) => PlaylistPage(index: index)));
-                    },
-                    child: ListTile(
-//                        leading: Container(height: 50.0, width: 50.0,child: Image.network(control.getPlaylistUser()[index].u)),
-                        title:Text(control.getPlaylistUser()[index].nome, ),
-                )
-                )
-            );
-          }
-      ),
+      child: Scaffold(
+        body: ListView.builder(
+            itemCount: control.getPlaylistUser().length,
+            itemBuilder: (context, index) {
+              return Container(
+                  margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
+                  child: GestureDetector(
+                      onTap: () {
+                          Navigator.push(
+                          context, new MaterialPageRoute(
+                          builder: (context) => PlaylistPage(index: index)));
+                      },
+                      child: ListTile(
+  //                        leading: Container(height: 50.0, width: 50.0,child: Image.network(control.getPlaylistUser()[index].u)),
+                          title:Text(control.getPlaylistUser()[index].nome, ),
+                  )
+                  )
+              );
+            }
+        ),
+        floatingActionButton: new FloatingActionButton(
+          onPressed: () {
+              Navigator.push(
+                  context, new MaterialPageRoute(
+                  builder: (context) => NewPlaylist()));
+              },
+          tooltip: 'Increment',
+          child: new Icon(Icons.add),
+        ),
+      )
     );
   }
 }

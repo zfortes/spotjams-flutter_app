@@ -7,34 +7,34 @@ class Stub {
         Music M1 = new Music(), M2 = new Music(), M3 = new Music(), M4 = new Music(), M5 = new Music();
         Music M6 = new Music(), M7 = new Music(), M8 = new Music(), M9 = new Music(), M10 = new Music();
         String image = "http://cache.boston.com/resize/bonzai-fba/Globe_Photo/2011/04/14/1302796985_4480/539w.jpg";
-        M1.setMusic("SoundHelix Song 1", "T. Schürger", image,
+        M1.setMusic(" ","SoundHelix Song 1", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", "T. Schürger");
 
-        M2.setMusic("SoundHelix Song 2", "T. Schürger", image,
+        M2.setMusic(" ","SoundHelix Song 2", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", "T. Schürger");
 
-        M3.setMusic("SoundHelix Song 3", "T. Schürger", image,
+        M3.setMusic(" ","SoundHelix Song 3", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", "T. Schürger");
 
-        M4.setMusic("SoundHelix Song 4", "T. Schürger", image,
+        M4.setMusic(" ","SoundHelix Song 4", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", "T. Schürger");
 
-        M5.setMusic("SoundHelix Song 5", "T. Schürger", image,
+        M5.setMusic(" ","SoundHelix Song 5", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", "T. Schürger");
 
-        M6.setMusic("SoundHelix Song 6", "T. Schürger", image,
+        M6.setMusic(" ","SoundHelix Song 6", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3", "T. Schürger");
 
-        M7.setMusic("SoundHelix Song 7", "T. Schürger", image,
+        M7.setMusic(" ","SoundHelix Song 7", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3", "T. Schürger");
 
-        M8.setMusic("SoundHelix Song 8", "T. Schürger", image,
+        M8.setMusic(" ","SoundHelix Song 8", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", "T. Schürger");
 
-        M9.setMusic("SoundHelix Song 9", "T. Schürger", image,
+        M9.setMusic(" ","SoundHelix Song 9", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3", "T. Schürger");
 
-        M10.setMusic("SoundHelix Song 10", "T. Schürger", image,
+        M10.setMusic(" ","SoundHelix Song 10", "T. Schürger", image,
         "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3", "T. Schürger");
         Music music = new Music();
         music.artist = "Desconhecido";
