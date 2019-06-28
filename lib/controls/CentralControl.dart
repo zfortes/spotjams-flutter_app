@@ -39,6 +39,11 @@ class CentralControl{
 //        return stub.getMusics();
     }
 
+    Future<void> createPlaylist(String name) async {
+        return await repo.createPlaylist(name, 1);
+//        return stub.getMusics();
+    }
+
     CentralControl(){
          setMusicasStub();
     }

@@ -1,0 +1,5 @@
+insere usuario
+curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=usuario&nome='admin'"
+
+insere playlist
+curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=playlists&nome='Teste'&usuario_id=1"
