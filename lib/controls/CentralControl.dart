@@ -35,7 +35,9 @@ class CentralControl{
     }
 
     Future<List<Music>> getMusics() async {
-         return await repo.getMusics();
+        musicas = await repo.getMusics();
+
+         return musicas;
 //        return stub.getMusics();
     }
 
