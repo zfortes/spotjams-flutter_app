@@ -73,11 +73,11 @@ class _MusicTabState extends State<MusicTab> {
         color: Colors.white,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height *0.85,
-        child: FutureBuilder(
+        child: FutureBuilder<List<Music>>(
           future: control.getMusics(),
           builder: (BuildContext context, AsyncSnapshot snapshot){
             print("TAMANHO");
-            print(snapshot.data.length);
+//            print(snapshot.data.length);
             if (snapshot.hasData) {
                return ListView.builder(
                       itemCount: snapshot.data.length,

@@ -70,51 +70,7 @@ class _NewPlaylistState extends State<NewPlaylist> {
                                 style: TextStyle(fontSize: 20),
                             ),
                         ),
-//                    TextFormField(
-//                        autofocus: false,
-//                        keyboardType: TextInputType.number,
-//                        inputFormatters: <TextInputFormatter>[
-//                            LengthLimitingTextInputFormatter(11),
-//                        ],
-//                        decoration: InputDecoration(
-//                            labelText: "CPF",
-//                            labelStyle: TextStyle(
-//                                color: Colors.black38,
-//                                fontWeight: FontWeight.bold,
-//                                fontSize: 20,
-//                            ),
-//                        ),
-//                        style: TextStyle(fontSize: 20),
-//                    ),
-//                    TextFormField(
-//                        autofocus: false,
-//                        keyboardType: TextInputType.datetime,
-//                        inputFormatters: <TextInputFormatter>[
-//                            LengthLimitingTextInputFormatter(10),
-//                        ],
-//                        decoration: InputDecoration(
-//                            labelText: "Data de Nascimento",
-//                            labelStyle: TextStyle(
-//                                color: Colors.black38,
-//                                fontWeight: FontWeight.bold,
-//                                fontSize: 20,
-//                            ),
-//                        ),
-//                        style: TextStyle(fontSize: 20),
-//                    ),
-//                    TextFormField(
-//                        autofocus: false,
-//                        keyboardType: TextInputType.emailAddress,
-//                        decoration: InputDecoration(
-//                            labelText: "Email",
-//                            labelStyle: TextStyle(
-//                                color: Colors.black38,
-//                                fontWeight: FontWeight.bold,
-//                                fontSize: 20,
-//                            ),
-//                        ),
-//                        style: TextStyle(fontSize: 20),
-//                    ),
+//
                         SizedBox(
                             height: 130,
                         ),
@@ -145,23 +101,9 @@ class _NewPlaylistState extends State<NewPlaylist> {
                                     ),
                                     onPressed: () {
                                         if (_formKey.currentState.validate()) {
-                                            // If the form is valid, display a Snackbar.
-//                                            Scaffold.of(context)
-//                                                .showSnackBar(SnackBar(content: Text('Processing Data')));
-//                                            Navigator.pop(context);
                                             createPlaylist(myController.text);
-                                            return showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                    return AlertDialog(
-                                                        // Retrieve the text the that user has entered by using the
-                                                        // TextEditingController.
-                                                        content: Text(myController.text),
-                                                    );
-                                                },
-                                            );
+                                            Navigator.pop(context);
                                         }
-
                                     },
                                 ),
                             ),

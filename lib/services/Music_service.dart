@@ -21,7 +21,7 @@ class Music_service{
   factory Music_service.fromJson(Map<String, dynamic> json){
     return new Music_service(
       id: json['id'],
-      nameMusic: json['music'],
+      nameMusic: json['musica'],
       nameAlbum: json['album'],
       urlAudio: json['path_arquivo'],
       artist: json['artista']
@@ -35,6 +35,7 @@ List<Music> convertFromMusic_service(List<Music_service> list){
   Music music;
   for (Music_service i in list) {
     music =  new Music();
+    print(i.nameMusic);
     music.setMusic(i.id, i.nameMusic, i.nameAlbum, urlAlbum, i.urlAudio, i.artist, );
     musics.add(music);
   }
