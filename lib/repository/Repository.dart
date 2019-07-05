@@ -52,6 +52,11 @@ class Repository{
         }
     }
 
+    Future<void> deletePlaylist(String id){
+        String url = "http://10.0.2.2:2345?method=post&db=bd&operation=1&tabela=musicas_playlists&musica_id=$m&playlist_id=$id";
+//        await http.get();
+    }
+
     Future<int> createPlaylist(String name, String id_user) async {
         String url = "http://10.0.2.2:2345?method=post&db=bd&operation=1&tabela=playlists&nome='$name'&usuario_id=$id_user";
         final response = await http.get(Uri.encodeFull(url));

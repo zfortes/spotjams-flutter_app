@@ -25,6 +25,9 @@ class CentralControl{
 //       stub.removeMusicFromPlaylist(indexPlaylist, indexMusic);
 //    }
 
+    void deletePlaylist(String id){
+        repo.deletePlaylist(id);
+    }
 
     List<Music> getMusicasUser(){
          return this.musicas;

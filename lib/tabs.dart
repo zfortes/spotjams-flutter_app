@@ -262,13 +262,9 @@ class _PlaylistTab extends State<PlaylistTab>{
                                             ),
                                             IconButton(
                                                 icon: (Icon(Icons
-                                                    .add_circle_outline)),
+                                                    .remove_circle_outline)),
                                                 onPressed: () => {
-//                                                    Navigator.push(context,
-//                                                        new MaterialPageRoute(
-//                                                            builder: (
-//                                                                context) =>
-//                                                                AddToPlaylist()))
+                                                    deletePlaylist(snapshot.data[index].id)
                                                 }, //TODO implementar a funcao de remover da playlist
                                             )
                                         ]);
@@ -287,6 +283,10 @@ class _PlaylistTab extends State<PlaylistTab>{
               })
 
       );
+  }
+
+  void deletePlaylist(String id){
+        control.deletePlaylist(id);
   }
 }
 
@@ -319,14 +319,16 @@ class _PlaylistPage extends State<PlaylistPage>{
 
     @override
     Widget build(BuildContext context) {
-        return  FutureBuilder<List<Music>>(
+        return  Container(
+            color: Colors.white,
+            child: FutureBuilder<List<Music>>(
                 future: control.getMusicsFromPlaylist(widget.index),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                     print("TAMANHO playlistpage ");
-//            print(snapshot.data.length);
+            print(snapshot.data.length);
                     if (snapshot.hasData) {
-                        print(snapshot.hasData);
-                      print(snapshot.data[0].id);
+                        print("entrou, aewww");
+//                      print(snapshot.data[0].id);
                         return ListView.builder(
                                 itemCount: snapshot.data.length,
                                 itemBuilder: (context, index) {
@@ -372,10 +374,10 @@ class _PlaylistPage extends State<PlaylistPage>{
                                 }
 
                         );
-                    }else{return Container();}
+                    }else{return Container(color: Colors.white,);}
                 }
 
-        );
+        ));
     }
 
 //        Material(

@@ -4,3 +4,12 @@ curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=usuario&nome='
 insere playlist
 curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=playlists&nome='Teste'&usuario_id=1"
 
+albun
+curl "http://127.0.0.1:2345?method=post&db=bd&operation=1&tabela=albuns&nome='LedZeppelinIV'&id_artista=1&data_lancamento='05-10-1975'"
+
+
+insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong2','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3','20090825') returning *;
+insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong3','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3','20090607') returning *;
+insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong4','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3','20090907') returning *;
+insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong5','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3','20090907') returning *;
+insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong6','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3','20090907') returning *;
