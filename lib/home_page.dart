@@ -1,19 +1,11 @@
 import 'dart:async';
-import 'package:spotjams/ListTabs.dart';
 import 'package:flutter/painting.dart';
 import 'package:spotjams/blocs/playerControl.dart';
-//import 'package:provider/provider.dart';
-//import 'package:spotjams/exhibition_bottom_sheet.dart';
 import 'package:spotjams/playerFull.dart';
 import 'dart:io';
-//import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart';
-//import 'package:spotjams/playerWidget.dart';
-//import 'package:spotjams/playerWidget.dart';
-//import 'package:spotjams/sliding_cards.dart';
+
 import 'package:spotjams/tabs.dart';
 import 'package:flutter/material.dart';
-
 import 'package:spotjams/controls/CentralControl.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';

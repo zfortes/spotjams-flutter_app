@@ -1,6 +1,7 @@
 import 'dart:core' as prefix0;
 import 'dart:core';
 
+import 'package:spotjams/entities/Artist.dart';
 import 'package:spotjams/entities/Music.dart';
 import 'package:spotjams/entities/Music.dart';
 import 'package:spotjams/entities/Playlist.dart';
@@ -24,6 +25,10 @@ class CentralControl{
 //    void removeMusicFromPLaylist(int indexPlaylist, int indexMusic){
 //       stub.removeMusicFromPlaylist(indexPlaylist, indexMusic);
 //    }
+
+    Future<List<Artist>> getTopArtist() async{
+        return await repo.getTopArtist();
+    }
 
     void deletePlaylist(String id){
         repo.deletePlaylist(id);
