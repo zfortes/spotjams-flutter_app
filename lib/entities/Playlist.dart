@@ -1,9 +1,13 @@
 import 'Music.dart';
 
 class Playlist {
-    int idPlaylist;
+    String id;
     String nome;
-    int id_usuario;
-    int num_seguidores;
-    List<Music> musicas;
+    String imagem;
+    void setPlaylist(String id, String nameM, String nameA){
+        this.id = id;
+        this.nome = nameM;
+        this.imagem = nameA;
+
+    }
 }
