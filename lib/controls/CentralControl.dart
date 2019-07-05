@@ -30,8 +30,15 @@ class CentralControl{
     }
 
     List<Music> getMusicasUser(){
+        getMusics();
          return this.musicas;
     }
+
+    Future removeFromPlaylist(String indexPlaylist, String indexMusic) async {
+        await repo.removeFromPlaylist(indexPlaylist, indexMusic);
+    }
+
+
 
     Future<List<Playlist>> getPlaylistsUser() async {
          this.playlists = await repo.getPlaylistsUser("1");

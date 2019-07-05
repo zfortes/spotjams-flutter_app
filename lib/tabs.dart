@@ -77,11 +77,11 @@ class _MusicTabState extends State<MusicTab> {
         child: FutureBuilder<List<Music>>(
           future: control.getMusics(),
           builder: (BuildContext context, AsyncSnapshot snapshot){
-            print("TAMANHO");
+//            print("TAMANHO");
 //            print(snapshot.data.length);
             if (snapshot.hasData) {
-                print(snapshot.hasData);
-                print(snapshot.data.length);
+//                print(snapshot.hasData);
+//                print(snapshot.data.length);
                return ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, indexMusic) {
@@ -149,8 +149,11 @@ class _MusicTabState extends State<MusicTab> {
   }
 
   void play(int index){
-      playerControl.setPlaylist(control.getMusicasUser());
+      playerControl.setPlaylist(control.musicas);
+//      print(control.getMusicasUser().length);
       playerControl.setMusic(control.getMusicasUser()[index]);
+      print("MUSICA");
+      print(control.musicas[index].nameMusic);
       playerControl.setIndex(index);
       audioPlayer.play(playerControl.getMusic.urlAudio);
       playerControl.setStatus(PlayerState.playing);
@@ -264,8 +267,9 @@ class _PlaylistTab extends State<PlaylistTab>{
                                                 icon: (Icon(Icons
                                                     .remove_circle_outline)),
                                                 onPressed: () => {
-                                                    deletePlaylist(snapshot.data[index].id)
-                                                }, //TODO implementar a funcao de remover da playlist
+                                                    deletePlaylist(snapshot.data[index].id),
+
+                                                },
                                             )
                                         ]);
                                 }),
@@ -313,14 +317,13 @@ class _PlaylistPage extends State<PlaylistPage>{
     }
 
 
-
-
-
-
     @override
     Widget build(BuildContext context) {
-        return  Container(
+        return Scaffold(
+          body: Container(
             color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height*0.95,
             child: FutureBuilder<List<Music>>(
                 future: control.getMusicsFromPlaylist(widget.index),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -331,44 +334,61 @@ class _PlaylistPage extends State<PlaylistPage>{
 //                      print(snapshot.data[0].id);
                         return ListView.builder(
                                 itemCount: snapshot.data.length,
-                                itemBuilder: (context, index) {
-                                    return Container(
-                                        padding: EdgeInsets.only(
-                                            top: 30,
-                                            left: 40,
-                                            right: 40,
-                                        ),
-                                        child: GestureDetector(
-                                            onTap: () {
-//                                                addMusictoPlaylist(snapshot.data[index].id);
-//                                                Navigator.pop(context);
-                                            },
-                                            child: Container(
-                                                width: MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .width *
-                                                    0.65,
-                                                //                                                          height: MediaQuery.of(context).size.height *0.06,
-                                                child: Text(
-                                                    snapshot
-                                                        .data[index]
-                                                        .nameMusic,
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight
-                                                            .bold,
-                                                        fontSize: MediaQuery
-                                                            .of(
-                                                            context)
-                                                            .size
-                                                            .width *
-                                                            0.04,
-                                                        color: Colors
-                                                            .black87)),
-                                            ),
-                                        )
+                                itemBuilder: (context, indexMusic) {
+                                    return Row(
+                                        children: <Widget>[
+                                          GestureDetector(
+                                                  onTap: () {
+                                                    play(snapshot.data, indexMusic); //inicia a musica
+                                                    Navigator.pop(context);
+                                                                                            Navigator.push( //entra no player
+                                                                                                context, new MaterialPageRoute(
+                                                                                                builder: (context) =>
+                                                                                                    PlayerFull()));
+                                                  },
+                                                  child: Row(
+                                                      children: <Widget>[
 
-                                    );
+                                                        Container(
+                                                          //                                                          padding: EdgeInsets.all(20),
+                                                          margin: EdgeInsets.all(10),
+                                                          width: MediaQuery
+                                                              .of(context)
+                                                              .size
+                                                              .width * 0.15,
+                                                          height: MediaQuery
+                                                              .of(context)
+                                                              .size
+                                                              .height * 0.06,
+                                                          child: Image.network(snapshot.data[indexMusic]
+                                                              .urlAlbum),
+                                                        ),
+                                                        Container(
+                                                          width: MediaQuery
+                                                              .of(context)
+                                                              .size
+                                                              .width * 0.65,
+                                                          //                                                          height: MediaQuery.of(context).size.height *0.06,
+                                                          child: Text(snapshot.data[indexMusic]
+                                                              .nameMusic,
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight
+                                                                      .bold,
+                                                                  fontSize: MediaQuery
+                                                                      .of(context)
+                                                                      .size
+                                                                      .width * 0.04,
+                                                                  color: Colors
+                                                                      .black87)),
+                                                        ),
+                                                      ]
+                                                  )
+                                          ),
+                                          IconButton(
+                                            icon: (Icon(Icons.remove_circle_outline)),
+                                            onPressed: () => {removeFromPlaylist(widget.index, snapshot.data[indexMusic].id), Navigator.pop(context)},
+                                          )
+                                        ]);
 
 
                                 }
@@ -377,110 +397,28 @@ class _PlaylistPage extends State<PlaylistPage>{
                     }else{return Container(color: Colors.white,);}
                 }
 
-        ));
+        )));
     }
 
-//        Material(
-//        color: Colors.black,
-////      color: Colors.green,
-//        child: SafeArea(
-//            child: Column(
-//                children: <Widget>[
-//                    Container(
-//                        color: Colors.white,
-//                        width: MediaQuery.of(context).size.width,
-//                        height: MediaQuery.of(context).size.height *0.10,
-//                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-//                        child: Text(control.getPlaylistUser()[widget.index].nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.08, color: Colors.black87  )),
-//                    ),
-//                    Container(
-//                        color: Colors.white,
-//                        width: MediaQuery.of(context).size.width,
-//                        height: MediaQuery.of(context).size.height *0.85,
-//                        child: ListView.builder(
-//                            itemCount: control.getPlaylistsUser()[widget.index].musicas.length,
-//                            itemBuilder: (context, indexMusic) {
-//                              return Row(
-//                                  children: <Widget>[
-//                                      Container(
-//
-////                                          color: Colors.green,
-//                                          child: GestureDetector(
-//                                              onTap: () {
-//                                                  play(widget.index, indexMusic); //inicia a musica
-//                                                  Navigator.push( //entra no player
-//                                                      context, new MaterialPageRoute(
-//                                                      builder: (context) => PlayerFull()));
-//                                              },
-//                                              child:  Row(
-//                                                  children: <Widget>[
-//
-//                                                      Container(
-////                                                          padding: EdgeInsets.all(20),
-//                                                            margin: EdgeInsets.all(10),
-//                                                            width: MediaQuery.of(context).size.width * 0.15,
-//                                                            height: MediaQuery.of(context).size.height *0.06,
-//                                                            child: Image.network(control.getPlaylistUser()[widget.index].musicas[indexMusic].urlAlbum),
-//                                                      ),
-//                                                      Container(
-//                                                          width: MediaQuery.of(context).size.width * 0.65,
-////                                                          height: MediaQuery.of(context).size.height *0.06,
-//                                                          child: Text(control.getPlaylistUser()[widget.index].musicas[indexMusic].nameMusic, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.04, color: Colors.black87 )),
-//                                                      ),
-//                                                  ]
-//                                              )
-//                                          )
-//                                      ),
-//                                      IconButton(
-//                                          icon: (Icon(Icons.remove_circle_outline)),
-//                                          onPressed: () => removeFromPlaylist(widget.index, indexMusic), //TODO implementar a funcao de remover da playlist
-//                                      )
-//                                  ],
-//                              );
-//
-////                                  Container(
-////                                  color: Colors.black,
-////                                  child: ListTile(
-////
-////                                                onLongPress: () => {} ,
-////                                                onTap: () => (play(index, indexMusic) ) ,
-////                                                leading: Container(height: 50.0, width: 50.0,child: Image.network(control.getMusicasUser()[indexMusic].urlAlbum)),
-////                                                title:Text(control.getMusicasUser()[indexMusic].nameMusic, style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width * 0.04, color: Colors.white  )),
-////                                  )
-////                                );
-//                            }
-//                        )
-//                    ),
-//                ],
-//            ),
-//        )
 
 
-//  void removeFromPlaylist(int indexPlaylist, int indexMusic){
-//    print("Entrou------------");
-//    setState(() {
-//      control.removeMusicFromPLaylist(indexPlaylist, indexMusic);
-//    });
-//
-//  }
-//
-//
-//  void play(int index, int musicIndex){
-//    playerControl.setPlaylist(control.getPlaylistsUser()[index].musicas);
-//    playerControl.setMusic(control.getPlaylistUser()[index].musicas[musicIndex]);
-//    playerControl.setIndex(musicIndex);
-//    audioPlayer.play(playerControl.getMusic.urlAudio);
-//    playerControl.setStatus(PlayerState.playing);
-//    PlayerFull();
-//  }
+  void removeFromPlaylist(String idPlaylist, String idMusic){
+    print("Entrou------------");
 
-//  PlaylistPage(int index){
-//    this.index = index;
-//  }
+      control.removeFromPlaylist(idPlaylist, idMusic);
 
-//  _PlaylistPage(int index){
-//    this.index = index;
-//  }
+
+  }
+
+//
+  void play(List<Music> p, int musicIndex){
+    playerControl.setPlaylist(p);
+    playerControl.setMusic(p[musicIndex]);
+    playerControl.setIndex(musicIndex);
+    audioPlayer.play(p[musicIndex].urlAudio);
+    playerControl.setStatus(PlayerState.playing);
+    PlayerFull();
+  }
 
 
 }

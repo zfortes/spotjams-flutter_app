@@ -166,7 +166,7 @@ class MiniPlayer extends StatelessWidget{
                                 left: 20.0),
                             child: new Container(
                                 height: MediaQuery.of(context).size.width * 0.2,
-                                width: MediaQuery.of(context).size.width * 0.98,
+                                width: MediaQuery.of(context).size.width * 0.6,
                                 child: new Card(
                                     color: Colors.white,
                                     elevation: 4.0,

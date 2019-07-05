@@ -36,7 +36,8 @@ List<Music> convertFromMusic_service(List<Music_service> list){
   for (Music_service i in list) {
     music =  new Music();
     print(i.nameMusic);
-    music.setMusic(i.id, i.nameMusic, i.nameAlbum, urlAlbum, i.urlAudio, i.artist, );
+    print(i.urlAudio.toString());
+    music.setMusic(i.id, i.nameMusic, i.nameAlbum,  urlAlbum , i.urlAudio, i.artist, );
     musics.add(music);
   }
   return musics;
