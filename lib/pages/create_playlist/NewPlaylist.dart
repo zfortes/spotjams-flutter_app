@@ -1,6 +1,9 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotjams/home_page.dart';
 
 class NewPlaylist extends StatefulWidget {
@@ -151,7 +154,10 @@ class _NewPlaylistState extends State<NewPlaylist> {
 
 
     createPlaylist(String name){
-        control.createPlaylist(name);
+      print("id");
+      print(playerControl.getid);
+        control.createPlaylist(name, playerControl.getid);
+
     }
 }
 

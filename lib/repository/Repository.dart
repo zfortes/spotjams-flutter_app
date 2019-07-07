@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:core';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotjams/entities/Artist.dart';
 import 'package:spotjams/entities/Music.dart';
 import 'package:spotjams/entities/Playlist.dart';
+import 'package:spotjams/services/Artist_service.dart';
 import 'package:spotjams/services/Music_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -65,8 +68,11 @@ class Repository{
       await http.get(Uri.encodeFull(url));
     }
 
+
+
     Future<int> createPlaylist(String name, String id_user) async {
         String url = "http://10.0.2.2:2345?method=post&db=bd&operation=1&tabela=playlists&nome='$name'&usuario_id=$id_user";
+
         final response = await http.get(Uri.encodeFull(url));
     }
 
@@ -121,6 +127,25 @@ class Repository{
 //            print(list.length);
 
 //                list.add(music.setMusic(nameM, nameA, urlAlbum, urlAudio, artist))
+            return list;//Post.fromJson(json.decode(response.body));
+        } else {
+            // If that call was not successful, throw an error.
+            print("Lascouseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            throw Exception('Failed to load post |||||||||||||||||||||||||||||||||||||||||||||||||||||||');
+        }
+
+    }
+
+    Future<List<Artist>> getTopArtist() async {
+        final response =
+            await http.get("http://10.0.2.2:2345/?method=get&db=bd&operation=8");
+        if (response.statusCode == 200) {
+            print("Lascouseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            var j =  json.decode(response.body);
+            List<Artist>  list = new   List<Artist>();
+            List<Artist_service> artists = new List<Artist_service>.from(j.map((i)=> Artist_service.fromJson(i)).toList());
+            list = convertFromArtist_service(artists);
+
             return list;//Post.fromJson(json.decode(response.body));
         } else {
             // If that call was not successful, throw an error.

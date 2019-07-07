@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:spotjams/entities/Artist.dart';
 import 'package:spotjams/entities/Playlist.dart';
 import 'package:spotjams/pages/create_playlist/NewPlaylist.dart';
 import 'package:spotjams/home_page.dart';
@@ -26,7 +27,7 @@ class Tabs extends StatelessWidget {
                 Tab(text: "Music",),
                 Tab(text: "Playlists",),
 //                Tab(text: "Artists",),
-                Tab(text: "Search",),
+                Tab(text: "Top artists",),
               ],
             ),
           ),
@@ -35,7 +36,7 @@ class Tabs extends StatelessWidget {
           children: [
             MusicTab(musics: new List<Music>()),
             PlaylistTab(),
-            Icon(Icons.directions_bike),
+            ArtistTab(),
 //            Icon(Icons.directions_bike),
           ],
         ),
@@ -192,7 +193,7 @@ class _PlaylistTab extends State<PlaylistTab>{
               .size
               .height * 0.85,
           child: FutureBuilder<List<Playlist>>(
-              future: control.getPlaylistsUser(),
+              future: control.getPlaylistsUser(playerControl.getid),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                   print("TAMANHO");
 //            print(snapshot.data.length);
@@ -424,112 +425,124 @@ class _PlaylistPage extends State<PlaylistPage>{
 }
 
 
-class AlbumsTab extends StatelessWidget {
-  final String text;
-  final bool isSelected;
+class ArtistTab extends StatefulWidget {
 
-  const AlbumsTab({Key key, @required this.isSelected, @required this.text})
+  const ArtistTab({Key key})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: isSelected ? 16 : 14,
-              color: isSelected ? Colors.black : Colors.grey,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            ),
-          ),
-          Container(
-            height: 6,
-            width: 20,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: isSelected ? Color(0xFFFF5A1D) : Colors.white,
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  _ArtistTab createState() => new _ArtistTab();
 }
 
-class SearchTab extends StatelessWidget {
-  final String text;
-  final bool isSelected;
+class _ArtistTab extends State<ArtistTab>{
 
-  const SearchTab({Key key, @required this.isSelected, @required this.text})
-      : super(key: key);
+  @override
+  void initState() {
+    super.initState();
+//      screenInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: isSelected ? 16 : 14,
-              color: isSelected ? Colors.black : Colors.grey,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            ),
-          ),
-          Container(
-            height: 6,
-            width: 20,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: isSelected ? Color(0xFFFF5A1D) : Colors.white,
-            ),
-          )
-        ],
-      ),
+    return Container(
+        color: Colors.white,
+        width: MediaQuery
+            .of(context)
+            .size
+            .width,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height * 0.85,
+        child: FutureBuilder<List<Artist>>(
+            future: control.getTopArtist(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print(snapshot.hasData);
+              if (snapshot.hasData) {
+                print(snapshot.hasData);
+                print(snapshot.data.length);
+                return Scaffold(
+                  body: ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return Row(
+                            children: <Widget>[
+                              Container(
+                                //                                          color: Colors.green,
+                                  child: GestureDetector(
+                                      child: Row(
+                                          children: <Widget>[
+
+                                            Container(
+                                              //                                                          padding: EdgeInsets.all(20),
+                                              margin: EdgeInsets
+                                                  .all(10),
+                                              width: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width *
+                                                  0.15,
+                                              height: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height *
+                                                  0.06,
+//                                                                child: Image
+//                                                                    .network(
+//                                                                    snapshot
+//                                                                        .data[indexMusic]
+//                                                                        .urlAlbum),
+                                            ),
+                                            Container(
+                                              width: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width *
+                                                  0.65,
+                                              //                                                          height: MediaQuery.of(context).size.height *0.06,
+                                              child: Text(
+                                                  snapshot
+                                                      .data[index]
+                                                      .nome,
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight
+                                                          .bold,
+                                                      fontSize: MediaQuery
+                                                          .of(
+                                                          context)
+                                                          .size
+                                                          .width *
+                                                          0.04,
+                                                      color: Colors
+                                                          .black87)),
+                                            ),
+                                          ]
+                                      )
+                                  )
+                              ),
+                              Text(snapshot
+                                  .data[index]
+                                  .aparicoes,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight
+                                          .bold,
+                                      fontSize: MediaQuery
+                                          .of(
+                                          context)
+                                          .size
+                                          .width *
+                                          0.04,
+                                      color: Colors
+                                          .black87))
+                            ]);
+                      }),
+                );
+              }else{return Container();}
+            })
+
     );
   }
-}
 
-class ArtistTab extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-
-  const ArtistTab({Key key, @required this.isSelected, @required this.text})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: isSelected ? 16 : 14,
-              color: isSelected ? Colors.black : Colors.grey,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-            ),
-          ),
-          Container(
-            height: 6,
-            width: 20,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: isSelected ? Color(0xFFFF5A1D) : Colors.white,
-            ),
-          )
-        ],
-      ),
-    );
-  }
 }
 
 

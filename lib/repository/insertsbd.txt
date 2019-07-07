@@ -1,5 +1,5 @@
 insere usuario
-curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=usuario&nome='admin'"
+curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=usuario&nome='admin'&email=admin@admin.com"
 
 insere playlist
 curl  "http://localhost:2345?method=post&db=bd&operation=1&tabela=playlists&nome='Teste'&usuario_id=1"
@@ -9,9 +9,10 @@ curl "http://127.0.0.1:2345?method=post&db=bd&operation=1&tabela=albuns&nome='Le
 
 artist
 insert into artistas (nome,info) values ('LedZeppelin','BandaDeRock') returning *;
+insert into albuns (nome,id_artista,data_lancamento) values ('LedZeppelinIV',1,'05-10-1975') returning *;
 
 album
-insert into albuns (nome,id_artista,data_lancamento) values ('LedZeppelinIV',1,'05-10-1975') returning *;
+
 
 insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong2','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3','20090825') returning *;
 insert into musicas (nome,descricao,artista_id,album_id,path_arquivo,data_lancamento) values ('SoundHelixSong3','MusicaporT.Schürger',1,1,'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3','20090607') returning *;
