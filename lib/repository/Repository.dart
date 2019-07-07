@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
 import 'dart:core';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotjams/entities/Artist.dart';
 import 'package:spotjams/entities/Music.dart';
 import 'package:spotjams/entities/Playlist.dart';
@@ -67,8 +68,11 @@ class Repository{
       await http.get(Uri.encodeFull(url));
     }
 
+
+
     Future<int> createPlaylist(String name, String id_user) async {
         String url = "http://10.0.2.2:2345?method=post&db=bd&operation=1&tabela=playlists&nome='$name'&usuario_id=$id_user";
+
         final response = await http.get(Uri.encodeFull(url));
     }
 

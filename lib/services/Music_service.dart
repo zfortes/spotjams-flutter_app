@@ -23,6 +23,7 @@ class Music_service{
       id: json['id'],
       nameMusic: json['musica'],
       nameAlbum: json['album'],
+      urlAlbum: json['path'],
       urlAudio: json['path_arquivo'],
       artist: json['artista']
     );

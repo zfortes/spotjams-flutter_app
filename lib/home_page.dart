@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/painting.dart';
 import 'package:spotjams/blocs/playerControl.dart';
+import 'package:spotjams/pages/login/profile.dart';
 import 'package:spotjams/playerFull.dart';
 import 'dart:io';
 
@@ -10,7 +11,8 @@ import 'package:spotjams/controls/CentralControl.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:spotjams/entities/Music.dart';
-
+import './pages/login/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum PlayerState { stopped, playing, paused }
 
@@ -31,14 +33,19 @@ CentralControl control;
 class HomePage extends StatefulWidget {
   @override
   _HomePage createState() => new _HomePage();
+
 }
 
-
+enum LoginStatus{
+  naoLogado,
+  Logado
+}
 
 class _HomePage extends State<HomePage> {
 //  PlayerInfo playerInfo = new PlayerInfo();
 
 //  AudioPlayer audioPlayer = new AudioPlayer();
+
 
 
 
@@ -253,6 +260,12 @@ class Header extends StatelessWidget {
             Spacer(),
             IconButton(
                 icon: Icon(Icons.settings),
+              onPressed: (){
+                Navigator.push(
+                context, new MaterialPageRoute(
+                builder: (context) => ProfilePage()));
+
+              }
             )
           ]
       ),

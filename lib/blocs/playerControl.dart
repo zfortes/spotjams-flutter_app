@@ -11,7 +11,22 @@ class PlayerControl extends BlocBase{
     int _index ;
     List<Music> _playlist;
     Music _music;
+    String id;
+    bool logado;
 //    AudioPlayer _player = AudioPlayer();
+
+    var _idController = BehaviorSubject<dynamic>();
+    Stream<dynamic> get outid => _idController.stream;
+    Sink<dynamic> get inid => _idController.sink;
+    dynamic get getid => _idController.value;
+    setid(String id){
+        inid.add(id);
+    }
+
+    var _logadoController = BehaviorSubject<dynamic>();
+    Stream<dynamic> get outLogado => _logadoController.stream;
+    Sink<dynamic> get inLogado => _logadoController.sink;
+    dynamic get getLogado => _logadoController.value;
 
     var _statusController = BehaviorSubject<dynamic>();
     Stream<dynamic> get outStatus => _statusController.stream;

@@ -45,9 +45,9 @@ class CentralControl{
 
 
 
-    Future<List<Playlist>> getPlaylistsUser() async {
-         this.playlists = await repo.getPlaylistsUser("1");
-        return await repo.getPlaylistsUser("1");
+    Future<List<Playlist>> getPlaylistsUser(String id) async {
+         this.playlists = await repo.getPlaylistsUser(id);
+        return await repo.getPlaylistsUser(id);
     }
 
     Future<List<Music>> getMusicsFromPlaylist(String pid) async{
@@ -61,8 +61,8 @@ class CentralControl{
 //        return stub.getMusics();
     }
 
-    Future<void> createPlaylist(String name) async {
-        return await repo.createPlaylist(name, 1.toString());
+    Future<void> createPlaylist(String name, String id) async {
+        return await repo.createPlaylist(name, id);
 //        return stub.getMusics();
     }
     Future<int> addMusictoPlaylist(String id, String m) async{

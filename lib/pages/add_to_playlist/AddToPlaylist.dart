@@ -18,7 +18,7 @@ class AddToPlaylist extends StatelessWidget {
               .size
               .height * 0.85,
           child: FutureBuilder<List<Playlist>>(
-              future: control.getPlaylistsUser(),
+              future: control.getPlaylistsUser(playerControl.getid),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                   print("TAMANHO");
 //            print(snapshot.data.length);
